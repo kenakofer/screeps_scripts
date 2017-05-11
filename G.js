@@ -253,7 +253,7 @@ function run_tick(){
     	check_terminals()
     }
 
-    cpuTrack(10,100,1000,10000)
+    cpuTrack(1,10,100,1000,10000)
 }
 
 //It keeps running track of the cpu across different time intervals. It's not exactly an average, but I think it's close...
