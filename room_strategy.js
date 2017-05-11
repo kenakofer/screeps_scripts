@@ -135,11 +135,11 @@ module.exports = {
     'E47N87': {
         'role_harvester': {
             desired_number: 1,
-            parts: default_parts,
+            parts: [MOVE, CARRY, WORK],
         },
         'role_upgrader': {
             desired_number: 1,
-            parts: default_parts,
+            parts: [MOVE, CARRY, WORK, WORK],
         },
         'role_builder': {
             desired_number: 3,
@@ -147,11 +147,11 @@ module.exports = {
         },
         'role_guard': {
             desired_number: 0,
-            parts: [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK],
+            parts: [TOUGH, ATTACK, MOVE],
         },
         'role_restocker': {
             desired_number: 0,
-            parts: [MOVE, CARRY, MOVE, CARRY, MOVE, CARRY],
+            parts: [MOVE, MOVE, MOVE CARRY, CARRY, CARRY],
         },
         'role_solominer': {
             parts: [MOVE, WORK, WORK, WORK, WORK, WORK, CARRY]
