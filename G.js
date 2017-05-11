@@ -550,6 +550,7 @@ var role_claimer = {
 
 var role_harvester = {
     run: function(c) {
+	c.say('hi')
         check_ondropped(c);
         check_invaders(c) || 
         check_mining(c) || 
