@@ -31,7 +31,7 @@ room_strategy = {
         },
         'role_builder': {
                 desired_number: 3,
-                parts: default_parts,
+                parts: [MOVE, CARRY, CARRY, WORK],
         },
         'role_guard': {
                 desired_number: 0,
