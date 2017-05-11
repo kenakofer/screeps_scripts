@@ -151,7 +151,7 @@ module.exports = {
         },
         'role_restocker': {
             desired_number: 0,
-            parts: [MOVE, MOVE, MOVE CARRY, CARRY, CARRY],
+            parts: [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
         },
         'role_solominer': {
             parts: [MOVE, WORK, WORK, WORK, WORK, WORK, CARRY]
