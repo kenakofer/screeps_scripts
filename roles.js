@@ -101,7 +101,7 @@ role_builder: {
 },
 
 role_courier: {
-    message: '🙏peace!',
+    message: 'ðpeace!',
     parts: [MOVE],
     
     run: function(c) {

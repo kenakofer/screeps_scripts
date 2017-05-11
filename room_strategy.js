@@ -1,7 +1,10 @@
 default_parts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, ATTACK]
+spawn_priority = ['role_harvester', 'role_restocker', 'role_guard', 'role_upgrader', 'role_builder']
 
 module.exports = {
 	
+    default_parts,
+    spawn_priority,
 
 	'W7N3': {
         'role_upgrader': {
