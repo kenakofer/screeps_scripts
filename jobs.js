@@ -1,7 +1,6 @@
 var f = require('f')
 
 module.exports = {
-
 //TODO refactor this anyway?
 check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
     if (! leaveEnergyAmount)
