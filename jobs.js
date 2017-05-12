@@ -58,12 +58,17 @@ check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
 check_solomining: function(c, flag_name){
     if ( (! Game.flags[flag_name]) || f.get_energy(c) == c.carryCapacity)
         return false
-    var target = Game.flags[flag_name].pos.lookFor('source')[0] //GOTCHA: It return a list, in this case a list of one...
+    var target = Game.flags[flag_name].pos.findInRange(FIND_SOURCES, 1)[0] //GOTCHA: It return a list, in this case a list of one...
+
+    if (Game.map.getTerrainAt(Game.flags[flag_name].pos) !== 'wall' && ! c.pos.isEqualTo(Game.flags[flag_name].pos)) {
+        c.moveTo(Game.flags[flag_name], {visualizePathStyle: {stroke: '#ff0', opacity: .3}});
+        return true
+    }
     
     if (target){
         var r = c.harvest(target)
         if (r == ERR_NOT_IN_RANGE){
-            c.moveTo(target, {visualizePathStyle: {stroke: '#ff0', opacity: .3}});
+            c.moveTo(Game.flags[flag_name], {visualizePathStyle: {stroke: '#ff0', opacity: .3}});
         }
         return target
     }
