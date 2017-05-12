@@ -154,7 +154,7 @@ module.exports = {
             parts: [TOUGH, ATTACK, MOVE],
         },
         'role_restocker': {
-            desired_number: 1,
+            desired_number: 2,
             parts: [MOVE, CARRY, CARRY],
         },
         'role_solominer': {
