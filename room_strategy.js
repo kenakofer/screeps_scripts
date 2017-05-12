@@ -134,6 +134,7 @@ module.exports = {
     },
 
     //TODO: it really can't be good style to put this here...
+
     //And on the official server :)
     'E47N87': {
         'role_harvester': {
@@ -142,14 +143,14 @@ module.exports = {
         },
         'role_upgrader': {
             desired_number: 1,
-            parts: [MOVE, CARRY, WORK, WORK],
+            parts: [MOVE, CARRY, WORK, WORK, WORK, WORK],
         },
         'role_builder': {
             desired_number: 2,
-            parts: [MOVE, CARRY, CARRY, WORK, WORK],
+            parts: [MOVE, CARRY, CARRY, WORK, WORK, WORK],
         },
         'role_guard': {
-            desired_number: 0,
+            desired_number: 1,
             parts: [TOUGH, ATTACK, MOVE],
         },
         'role_restocker': {
