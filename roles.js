@@ -25,7 +25,8 @@ role_claimer: {
         //To build up a possibly newly claimed room:
         jobs.check_mining(c) ||
         jobs.check_spawn(c) ||
-        jobs.upgrade_controller(c)
+        jobs.upgrade_controller(c) ||
+        (c.job = 'Nothing to do') 
         
     },
 },
@@ -37,7 +38,8 @@ role_harvester: {
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||
         jobs.check_towers(c) ||
-        jobs.upgrade_controller(c);
+        jobs.upgrade_controller(c) ||
+        (c.job = 'Nothing to do') 
     },
 },
 
@@ -59,7 +61,7 @@ role_restocker: {
         jobs.check_dropped(c) ||
         !(s='checking my home room') ||
         jobs.check_home_room(c) ||
-        !(s='I have nothing to do...')
+        (c.job = 'Nothing to do') 
 
         //console.log(c.name+': '+s)
     },
@@ -69,7 +71,8 @@ role_guard: {
     run: function(c) {
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
-        jobs.check_barracks(c)
+        jobs.check_barracks(c) ||
+        (c.job = 'Nothing to do') 
     },
 },
 
@@ -81,7 +84,9 @@ role_upgrader: {
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c) ||
         jobs.check_mining(c) ||
-        jobs.upgrade_controller(c);
+        jobs.upgrade_controller(c) ||
+        (c.job = 'Nothing to do')
+
     },
 },
 
@@ -96,12 +101,14 @@ role_builder: {
         jobs.check_construction(c) ||
         //check_spawn(c) ||
         //check_towers(c) ||
-        jobs.upgrade_controller(c);
+        jobs.upgrade_controller(c) ||
+        (c.job = 'Nothing to do') 
+
     },
 },
 
 role_courier: {
-    message: 'ÃÂ°ÃÂÃÂÃÂpeace!',
+    message: 'Peace!',
     parts: [MOVE],
     
     run: function(c) {

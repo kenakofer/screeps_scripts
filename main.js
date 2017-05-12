@@ -38,6 +38,7 @@ module.exports.loop = function () {
     for (var name in Game.creeps){
         var c = Game.creeps[name];
         if (! c.spawning) {
+            c.job = 'I was given no job.'
 
             //c.say(c.memory.role)
 
@@ -51,6 +52,8 @@ module.exports.loop = function () {
 	            roles['role_harvester'].run(c)
 	        }
 	    }
+
+            c.memory.job = c.job
     }
 
     if (Game.time % 3 === 1)

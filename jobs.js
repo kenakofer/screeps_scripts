@@ -3,6 +3,9 @@ var f = require('f')
 module.exports = {
 //TODO refactor this anyway?
 check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
+    
+    c.job = 'check_withdraw'
+
     if (! leaveEnergyAmount)
         leaveEnergyAmount=0
         
@@ -55,6 +58,9 @@ check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
 },
 
 check_solomining: function(c, flag_name){
+
+    c.job = 'check_solomining'
+
     if ( (! Game.flags[flag_name]) || f.get_energy(c) == c.carryCapacity)
         return false
     var target = Game.flags[flag_name].pos.findInRange(FIND_SOURCES, 1)[0] //GOTCHA: It return a list, in this case a list of one...
@@ -75,6 +81,9 @@ check_solomining: function(c, flag_name){
 
 //TODO upgraders and maybe others don't pick up resources next to them while upgrading? Maybe it's because they are withdrawing from a neighboring container too quickly.
 check_ondropped: function(c){
+
+    c.job = 'check_ondropped'
+
     var dropped = c.pos.findInRange(FIND_DROPPED_ENERGY, 1)[0]
     if (!dropped)
     	return false
@@ -84,6 +93,9 @@ check_ondropped: function(c){
 },
 
 check_dropped: function(c){
+
+    c.job = 'check_dropped'
+
     var dropped = c.pos.findClosestByPath(FIND_DROPPED_ENERGY)
     if (! dropped)
     	return false
@@ -98,74 +110,83 @@ check_dropped: function(c){
 },
 
 check_terminal: function(c) {
-	terminal = c.room.terminal; 
-	storage = c.room.storage
-	if (terminal && storage){
-		if (f.get_energy(storage) > storage.storeCapacity * 2/3){
-			//Energy surplus here, so take from the storage to the terminal
-			from = storage; to = terminal
-		}
-		else if (f.get_energy(storage) < storage.storeCapacity / 2 && f.get_energy(terminal) > 0) {
-			//Energy deficit here, so take from the terminal and place into storage
-			from = terminal; to = storage
-		} else {
-			//Energy balanced here. No giving or receiving
-			return false
-		}
 
-		if (f.get_energy(c) > 0){
-			//Deposit in the receiving structure
-			r = c.transfer(to, RESOURCE_ENERGY)
-			if (r === ERR_NOT_IN_RANGE){
-				c.moveTo(to)
-				return true
-			}
-			if (r === OK) {
-				return true
-			}
-			console.log('Could not deposit energy: '+r)
-		}
-		else {
-			//TODO this segment may never get reached, since the restockers check_withdraw when they have no energy. Is it needed?
-			console.log(from)
-			//Withdraw from the giving structure
-			r = c.withdraw(from, RESOURCE_ENERGY)
-			if (r === ERR_NOT_IN_RANGE){
-				c.moveTo(to)
-				return true
-			}
-			if (r === OK) {
-				return true
-			}
-			console.log('Could not withdraw energy: '+r)
-		}
-	}
+    c.job = 'check_terminal'
+
+    terminal = c.room.terminal; 
+    storage = c.room.storage
+    if (terminal && storage){
+            if (f.get_energy(storage) > storage.storeCapacity * 2/3){
+                    //Energy surplus here, so take from the storage to the terminal
+                    from = storage; to = terminal
+            }
+            else if (f.get_energy(storage) < storage.storeCapacity / 2 && f.get_energy(terminal) > 0) {
+                    //Energy deficit here, so take from the terminal and place into storage
+                    from = terminal; to = storage
+            } else {
+                    //Energy balanced here. No giving or receiving
+                    return false
+            }
+
+            if (f.get_energy(c) > 0){
+                    //Deposit in the receiving structure
+                    r = c.transfer(to, RESOURCE_ENERGY)
+                    if (r === ERR_NOT_IN_RANGE){
+                            c.moveTo(to)
+                            return true
+                    }
+                    if (r === OK) {
+                            return true
+                    }
+                    console.log('Could not deposit energy: '+r)
+            }
+            else {
+                    //TODO this segment may never get reached, since the restockers check_withdraw when they have no energy. Is it needed?
+                    console.log(from)
+                    //Withdraw from the giving structure
+                    r = c.withdraw(from, RESOURCE_ENERGY)
+                    if (r === ERR_NOT_IN_RANGE){
+                            c.moveTo(to)
+                            return true
+                    }
+                    if (r === OK) {
+                            return true
+                    }
+                    console.log('Could not withdraw energy: '+r)
+            }
+    }
 },
 
 
 
 sign_controller: function(c, roomName, message){
-	if (c.room.name !== roomName){
-		c.moveTo(new RoomPosition(15, 15, roomName))
-		return true
-	}
-	controller = get([Game.rooms[roomName], 'controller'])
-	if (! controller){
-		console.log('no controller in this room?')
-		return false
-	}
-	r = c.signController(controller, message)
-	if (r == ERR_NOT_IN_RANGE){
-		c.moveTo(controller)
-		return true
-	}
-	if (r == OK){
-		Game.flags[c.memory.flag].remove()
-		return true
-	}
+
+    c.job = 'sign_controller'
+
+    if (c.room.name !== roomName){
+            c.moveTo(new RoomPosition(15, 15, roomName))
+            return true
+    }
+    controller = get([Game.rooms[roomName], 'controller'])
+    if (! controller){
+            console.log('no controller in this room?')
+            return false
+    }
+    r = c.signController(controller, message)
+    if (r == ERR_NOT_IN_RANGE){
+            c.moveTo(controller)
+            return true
+    }
+    if (r == OK){
+            Game.flags[c.memory.flag].remove()
+            return true
+    }
 },
 
 check_invaders: function(c){
+
+    c.job = 'check_invaders'
+
     var target = c.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
     if (target){
         r = c.attack(target) 
@@ -179,6 +200,9 @@ check_invaders: function(c){
 },
 
 check_barracks: function(c){
+
+    c.job = 'check_barracks'
+
     var flag = c.room.find(FIND_FLAGS, {filter: (f) => f.name.includes('barrack')})[0]
     if (flag){
         c.moveTo(flag.pos)
@@ -187,6 +211,9 @@ check_barracks: function(c){
 },
 
 check_mining: function(c){
+
+    c.job = 'check_mining'
+
     if ( (! c.memory.mining) && f.get_energy(c) == 0) {
         var mine = c.pos.findClosestByPath(FIND_SOURCES, {filter: (s) =>
         	//If there is a flag on the source position whose name is in memory, with the value of a currently living creep
@@ -209,8 +236,11 @@ check_mining: function(c){
 },
 
 check_spawn: function(c){
-	if (f.get_energy(c) == 0)
-		return false
+
+    c.job = 'check_spawn'
+
+    if (f.get_energy(c) == 0)
+            return false
     var target = c.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => {
             return (s.structureType == STRUCTURE_EXTENSION ||
@@ -226,8 +256,11 @@ check_spawn: function(c){
 },
 
 check_towers: function(c){
-	if (f.get_energy(c) == 0)
-		return false
+
+    c.job = 'check_towers'
+
+    if (f.get_energy(c) == 0)
+            return false
     var target = c.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
     });
@@ -240,6 +273,9 @@ check_towers: function(c){
 },
 
 upgrade_controller: function(c) {
+
+    c.job = 'upgrade_controller'
+
     var r = c.upgradeController(c.room.controller)
     
     if(r === ERR_NOT_IN_RANGE) {
@@ -255,6 +291,9 @@ upgrade_controller: function(c) {
 },
 
 claim_controller: function(c, flag_name){
+
+    c.job = 'claim_controller'
+
     var flag = Game.flags[flag_name]
     if (! flag)
         return false
@@ -291,10 +330,13 @@ claim_controller: function(c, flag_name){
 },
 
 check_home_room: function(c) {
-	if (! c.memory.home_room){
-		c.memory.home_room = c.room.name
-		return false //We've decided this is home
-	}
+
+    c.job = 'check_home_room'
+
+    if (! c.memory.home_room){
+            c.memory.home_room = c.room.name
+            return false //We've decided this is home
+    }
     if (c.room.name === c.memory.home_room)
         return false //We're already there
     else {
@@ -305,6 +347,9 @@ check_home_room: function(c) {
 },
 
 check_construction: function(c){
+    
+    c.job = 'check_construction'
+
     var target = c.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
     if (target){
         var r = c.build(target)
@@ -318,6 +363,9 @@ check_construction: function(c){
 },
 
 check_store: function(c){
+
+    c.job = 'check_store'
+
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (s) =>  (s.structureType == STRUCTURE_STORAGE ||
@@ -341,6 +389,9 @@ check_store: function(c){
 
 //TODO add parameter for movement?
 check_store_link: function(c){
+
+    c.job = 'check_store_link'
+
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (s) =>  s.structureType == STRUCTURE_LINK && s.energy < s.energyCapacity
