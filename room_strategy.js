@@ -137,7 +137,7 @@ module.exports = {
     //And on the official server :)
     'E47N87': {
         'role_harvester': {
-            desired_number: 1,
+            desired_number: 0,
             parts: [MOVE, CARRY, WORK],
         },
         'role_upgrader': {
@@ -145,19 +145,19 @@ module.exports = {
             parts: [MOVE, CARRY, WORK, WORK],
         },
         'role_builder': {
-            desired_number: 3,
-            parts: [MOVE, CARRY, CARRY, WORK],
+            desired_number: 2,
+            parts: [MOVE, CARRY, CARRY, WORK, WORK],
         },
         'role_guard': {
             desired_number: 0,
             parts: [TOUGH, ATTACK, MOVE],
         },
         'role_restocker': {
-            desired_number: 0,
-            parts: [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
+            desired_number: 1,
+            parts: [MOVE, CARRY, CARRY],
         },
         'role_solominer': {
-            parts: [MOVE, WORK, WORK, WORK, WORK, WORK, CARRY]
+            parts: [MOVE, WORK, WORK, WORK, WORK, CARRY]
             //desired number is determined by flags in the room
         },
         'constructedWall': {
