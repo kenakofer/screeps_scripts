@@ -410,7 +410,19 @@ check_store_link: function(c){
             }
         }
     }
-    
+},
+
+check_gathering_place: function(c){
+
+    c.job = 'check_gathering_place'
+
+    var flag = f.get([c.room.find(FIND_FLAGS, {filter: (f) => f.name.includes(c.memory.role) && f.name.includes('gather')}), 0])
+    if (! flag)
+        return false
+    if (c.pos.getRangeTo(flag) > 0) {
+        c.moveTo(flag)
+        return true
+    }
 }
 
 };

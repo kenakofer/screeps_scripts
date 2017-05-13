@@ -26,6 +26,7 @@ role_claimer: {
         jobs.check_mining(c) ||
         jobs.check_spawn(c) ||
         jobs.upgrade_controller(c) ||
+        jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do') 
         
     },
@@ -39,6 +40,7 @@ role_harvester: {
         jobs.check_spawn(c) ||
         jobs.check_towers(c) ||
         jobs.upgrade_controller(c) ||
+        jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do') 
     },
 },
@@ -47,20 +49,14 @@ role_restocker: {
     run: function(c) {
         jobs.check_ondropped(c);
 
-        !(s='withdawing') ||
         jobs.check_withdraw(c) ||
-        !(s='mining') ||
         jobs.check_mining(c) ||
-        !(s='spawn refill') ||
         jobs.check_spawn(c) ||
-        !(s='tower refill') ||
         jobs.check_towers(c) ||
-        !(s='terminal filling/withdrawing') ||
         jobs.check_terminal(c) ||
-        !(s='finding dropped stuff') ||
         jobs.check_dropped(c) ||
-        !(s='checking my home room') ||
         jobs.check_home_room(c) ||
+        jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do') 
 
         //console.log(c.name+': '+s)
@@ -72,6 +68,7 @@ role_guard: {
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_barracks(c) ||
+        jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do') 
     },
 },
@@ -85,6 +82,7 @@ role_upgrader: {
         jobs.check_withdraw(c) ||
         jobs.check_mining(c) ||
         jobs.upgrade_controller(c) ||
+        jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do')
 
     },
@@ -102,6 +100,7 @@ role_builder: {
         //check_spawn(c) ||
         //check_towers(c) ||
         jobs.upgrade_controller(c) ||
+        jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do') 
 
     },
