@@ -158,7 +158,7 @@ module.exports = {
             parts: [MOVE, CARRY, CARRY],
         },
         'role_solominer': {
-            parts: [MOVE, WORK, WORK, WORK, WORK, CARRY]
+            parts: [MOVE, WORK, WORK, WORK, WORK, WORK, CARRY]
             //desired number is determined by flags in the room
         },
         'constructedWall': {
