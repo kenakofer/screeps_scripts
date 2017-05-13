@@ -46,7 +46,7 @@ replace_ticks: function(creep){
 },
 
 imminent_death: function(creep){
-    return creep.ticksToLive < replace_ticks(creep)
+    return creep.ticksToLive <= this.replace_ticks(creep)
 }
 
 };
