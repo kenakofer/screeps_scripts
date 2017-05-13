@@ -1,7 +1,7 @@
 module.exports = {
 /*
 Takes the field address of some desired value, and either returns it, or returns undefined if the field or a parent doesn't exist
-[Game,'creeps',[Memory, 'f_name']] => is defined: Game['creeps'][Memory['f_name']
+[Game,'creeps',[Memory, 'f_name']] => is defined: Game['creeps'][Memory['f_name']]
 */
 get: function(list) {
 	if (arguments.length !== 1){
@@ -39,5 +39,14 @@ get_energy: function(structure){
 		return structure.carry.energy
 	}
 	return 0
+},
+
+replace_ticks: function(creep){
+    return creep.body.length * CREEP_SPAWN_TIME
+},
+
+imminent_death: function(creep){
+    return creep.ticksToLive < replace_ticks(creep)
 }
+
 };

@@ -4,12 +4,11 @@ var roles = require('roles')
 
 module.exports = {
 
-	census: function(justCount, home_room){
-        
+census: function(justCount, home_room){
     role_count={};
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-        if (creep.memory.home_room == home_room){
+        if (creep.memory.home_room == home_room && ! f.imminent_death(creep)){
             var r = creep.memory.role;
             if (! (r in role_count)) {
                 role_count[r] = [creep];
@@ -54,7 +53,9 @@ check_population: function(){
         
         //Create solominers
         if (f_name.includes('solomine')){
-            if (! f.get([Game, 'creeps', [Memory, f_name]])) {
+            if (! f.get([Game, 'creeps', [Memory, f_name]]) 
+                    || f.imminent_death(Game.creeps[Memory[f_name]])
+            ) {
                 
                 var mine_in_room = Game.flags[f_name].room.name
                 var spawn_in_room = mine_in_room
