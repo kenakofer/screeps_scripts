@@ -142,7 +142,8 @@ check_terminal: function(c) {
             }
             else {
                     //TODO this segment may never get reached, since the restockers check_withdraw when they have no energy. Is it needed?
-                    console.log(from)
+                    //Update: It is sometimes reached in W8N6
+                    console.log('This strange segment is being reached by creep '+c.name)
                     //Withdraw from the giving structure
                     r = c.withdraw(from, RESOURCE_ENERGY)
                     if (r === ERR_NOT_IN_RANGE){

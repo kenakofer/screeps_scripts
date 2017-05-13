@@ -1,5 +1,5 @@
 var f = require('f')
-var room_strategy = require('room_strategy')
+//var room_strategy = require('room_strategy')
 
 module.exports = {
 
@@ -29,7 +29,7 @@ run_tower: function(t) {
     var closestDamaged = t.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (s) => {
         	if (s.hits < s.hitsMax - 500) {
-        		desired_hits = f.get([room_strategy, roomName, s.structureType, 'desired_hits'])
+        		desired_hits = f.get([Memory, 'room_strategy', roomName, s.structureType, 'desired_hits'])
         		if (! desired_hits)
         			desired_hits = 30000
         		return s.hits < desired_hits
