@@ -3,20 +3,6 @@ var f = require('f')
 var population = require('population')
 var structures = require('structures')
 
-//It keeps running track of the cpu across different time intervals. It's not exactly an average, but I think it's close...
-function cpuTrack(){
-    for (i in arguments){
-            t = arguments[i]
-            if ( [undefined, null].includes(Memory.cpuTrack[t]))
-                    Memory.cpuTrack[t] = Game.cpu.getUsed()
-            else
-                    Memory.cpuTrack[t] = ( (t-1)*Memory.cpuTrack[t] + Game.cpu.getUsed()) / t
-    }
-
-    if (Memory.printCpu)
-	console.log(JSON.stringify(Memory.cpuTrack))
-}
-
 module.exports.loop = function () {
 
     for (var name in Game.creeps){
@@ -58,6 +44,6 @@ module.exports.loop = function () {
     	structures.check_terminals()
     }
 
-    cpuTrack(1,10,100,1000,10000)
+    f.cpuTrack(1,10,100,1000,10000)
     
 }
