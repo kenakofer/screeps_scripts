@@ -143,15 +143,15 @@ module.exports = {
         },
         'role_upgrader': {
             desired_number: 1,
-            parts: [MOVE, CARRY, WORK, WORK, WORK, WORK],
+            parts: [MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
         },
         'role_builder': {
             desired_number: 2,
-            parts: [MOVE, CARRY, CARRY, WORK, WORK, WORK],
+            parts: [MOVE, MOVE, MOVE, CARRY, CARRY, WORK, WORK, WORK],
         },
         'role_guard': {
             desired_number: 1,
-            parts: [TOUGH, ATTACK, MOVE],
+            parts: [TOUGH, TOUGH, MOVE, MOVE, ATTACK, MOVE],
         },
         'role_restocker': {
             desired_number: 2,
