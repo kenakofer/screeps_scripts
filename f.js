@@ -47,6 +47,20 @@ replace_ticks: function(creep){
 
 imminent_death: function(creep){
     return creep.ticksToLive <= this.replace_ticks(creep)
+},
+
+//It keeps running track of the cpu across different time intervals. It's not exactly an average, but I think it's close...
+cpuTrack: function(){
+    for (i in arguments){
+            t = arguments[i]
+            if ( [undefined, null].includes(Memory.cpuTrack[t]))
+                    Memory.cpuTrack[t] = Game.cpu.getUsed()
+            else
+                    Memory.cpuTrack[t] = ( (t-1)*Memory.cpuTrack[t] + Game.cpu.getUsed()) / t
+    }
+
+    if (Memory.printCpu)
+		console.log(JSON.stringify(Memory.cpuTrack))
 }
 
 };

@@ -79,7 +79,7 @@ role_upgrader: {
         jobs.check_ondropped(c);
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
-        jobs.check_withdraw(c) ||
+        jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
         jobs.check_mining(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
