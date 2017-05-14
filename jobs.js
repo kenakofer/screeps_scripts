@@ -359,6 +359,8 @@ check_construction: function(c){
             return target
         }
         if (r==OK)
+            //TODO does this work?
+            this.check_withdraw(c, true, true, 300)
             return target
     }
 },
@@ -383,8 +385,6 @@ check_store: function(c){
                 return store
             }
             if (r==OK) {
-                //TODO why doesn't this work? Simultaneous action issue?
-                this.check_withdraw(c, true, true, 300)
                 return store
             }
         }
