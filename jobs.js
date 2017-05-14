@@ -218,7 +218,7 @@ check_mining: function(c){
     if ( (! c.memory.mining) && f.get_energy(c) == 0) {
         var mine = c.pos.findClosestByPath(FIND_SOURCES, {filter: (s) =>
         	//If there is a flag on the source position whose name is in memory, with the value of a currently living creep
-            (! f.get(  [Game, 'creeps', [Memory, [s.pos.lookFor('flag')[0], 'name']]]  ))
+            (! f.get(  [Game, 'creeps', [Memory, [s.pos.findInRange(FIND_FLAGS, 1), 0, 'name']]]  ))
             //TODO also if it's not in the room/not mining?
         })
         if (mine) {
@@ -285,7 +285,7 @@ upgrade_controller: function(c) {
     }
     else if (r===OK){
         //Try to pull more energy from any storage that might be nearby, but only if there is enough to fill up and leave some for other important stuff, like maybe restockers want it
-        this.check_withdraw(c, true, true, 100)
+        this.check_withdraw(c, true, true, 300)
         return true
     }
     return false
@@ -382,8 +382,11 @@ check_store: function(c){
                 c.moveTo(store)
                 return store
             }
-            if (r==OK)
+            if (r==OK) {
+                //TODO why doesn't this work? Simultaneous action issue?
+                this.check_withdraw(c, true, true, 300)
                 return store
+            }
         }
     }
 },

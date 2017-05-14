@@ -93,7 +93,7 @@ role_builder: {
         //c.say('hi')
         jobs.check_ondropped(c);
         jobs.check_invaders(c) ||
-        jobs.check_withdraw(c) ||
+        jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
         jobs.check_mining(c) ||
         jobs.check_home_room(c) ||
         jobs.check_construction(c) ||
