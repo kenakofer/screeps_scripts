@@ -13,7 +13,7 @@ role_solominer: {
             jobs.check_store_link(c)
         
         jobs.check_solomining(c, c.memory.mining_flag)
-        //|| check_construction(c)
+        || jobs.check_construction(c)
     },
 },
 
