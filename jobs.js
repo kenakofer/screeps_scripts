@@ -63,6 +63,7 @@ check_solomining: function(c, flag_name){
 
     if ( (! Game.flags[flag_name]) || f.get_energy(c) == c.carryCapacity)
         return false
+
     var target = Game.flags[flag_name].pos.findInRange(FIND_SOURCES, 1)[0] //GOTCHA: It return a list, in this case a list of one...
 
     if (Game.map.getTerrainAt(Game.flags[flag_name].pos) !== 'wall' && ! c.pos.isEqualTo(Game.flags[flag_name].pos)) {
@@ -364,10 +365,11 @@ check_construction: function(c, nomove){
             c.moveTo(target, {visualizePathStyle: {stroke: '#00f', opacity: .3}})
             return target
         }
-        if (r==OK)
+        if (r==OK){
             //TODO does this work?
             this.check_withdraw(c, true, true, 300)
             return target
+        }
     }
     return false
 },
@@ -386,8 +388,8 @@ check_store: function(c){
         //TODO change or remove this to help solominers not wander away
         if (store) {
             r = c.transfer(store, "energy")
-            //Only go out of your way to store energy if you're full
-            if (r == ERR_NOT_IN_RANGE && f.get_energy(c) == c.carryCapacity){
+            //Only go out of your way to store energy if you're full, and the store is close by
+            if (r == ERR_NOT_IN_RANGE && f.get_energy(c) == c.carryCapacity && c.pos.getRangeTo(store) < 5){
                 c.moveTo(store)
                 return store
             }
