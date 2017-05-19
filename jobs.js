@@ -300,6 +300,12 @@ claim_controller: function(c, flag_name){
         return false
 
     var pos = flag.pos
+
+    if (c.room.name !== flag.pos.roomName){
+        c.moveTo(flag)
+        return true
+    }
+    
     var controller = pos.lookFor(LOOK_STRUCTURES)[0]
 
     if (controller) {
