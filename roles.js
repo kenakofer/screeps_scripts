@@ -13,7 +13,7 @@ role_solominer: {
             jobs.check_store_link(c)
         
         jobs.check_solomining(c, c.memory.mining_flag)
-        || jobs.check_construction(c)
+        || jobs.check_construction(c, true) //Set the nomove parameter so they don't wander away. This is useful mainly for constructing the containers they will store in.
     },
 },
 

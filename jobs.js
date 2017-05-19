@@ -353,14 +353,14 @@ check_home_room: function(c) {
     }
 },
 
-check_construction: function(c){
+check_construction: function(c, nomove){
     
     c.job = 'check_construction'
 
     var target = c.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
     if (target){
         var r = c.build(target)
-        if (r == ERR_NOT_IN_RANGE) {
+        if (r == ERR_NOT_IN_RANGE && ! nomove) {
             c.moveTo(target, {visualizePathStyle: {stroke: '#00f', opacity: .3}})
             return target
         }
@@ -369,6 +369,7 @@ check_construction: function(c){
             this.check_withdraw(c, true, true, 300)
             return target
     }
+    return false
 },
 
 check_store: function(c){
