@@ -60,8 +60,7 @@ check_population: function(){
                 var mine_in_room = Game.flags[f_name].room.name
                 var spawn_in_room = mine_in_room
                 
-                //TODO use get
-                if (Memory.room_strategy[mine_in_room].role_solominer.spawn_room) {
+                if (f.get([Memory.room_strategy, mine_in_room, 'role_solominer', 'spawn_room'])) {
                     spawn_in_room = Memory.room_strategy[mine_in_room].role_solominer.spawn_room
                 }
                 var spawn = Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS)[0];
