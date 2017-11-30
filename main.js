@@ -7,7 +7,7 @@ module.exports.loop = function () {
 
     //Make sure basic memory locations exist
     if (! Memory.cpuTrack){ Memory.cpuTrack={} }
-    if (! Memory.room_strategy){ Merory.room_strategy={} }
+    if (! Memory.room_strategy){ Memory.room_strategy={} }
 
 
     for (var name in Game.creeps){
