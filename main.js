@@ -5,6 +5,11 @@ var structures = require('structures')
 
 module.exports.loop = function () {
 
+    //Make sure basic memory locations exist
+    if (! Memory.cpuTrack){ Memory.cpuTrack={} }
+    if (! Memory.room_strategy){ Merory.room_strategy={} }
+
+
     for (var name in Game.creeps){
         var c = Game.creeps[name];
         if (! c.spawning) {
