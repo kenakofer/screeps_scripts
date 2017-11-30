@@ -85,7 +85,7 @@ check_ondropped: function(c){
 
     c.job = 'check_ondropped'
 
-    var dropped = c.pos.findInRange(FIND_DROPPED_ENERGY, 1)[0]
+    var dropped = c.pos.findInRange(FIND_DROPPED_RESOURCES, 1)[0]
     if (!dropped)
     	return false
     r = c.pickup(dropped)
@@ -97,7 +97,7 @@ check_dropped: function(c){
 
     c.job = 'check_dropped'
 
-    var dropped = c.pos.findClosestByPath(FIND_DROPPED_ENERGY)
+    var dropped = c.pos.findClosestByPath(FIND_DROPPED_RESOURCES)
     if (! dropped)
     	return false
 

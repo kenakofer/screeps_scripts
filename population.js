@@ -28,20 +28,23 @@ check_population: function(){
         var spawn = Game.rooms[roomName].find(FIND_MY_SPAWNS)[0]
         var role_count = this.census(false, roomName)
         //Replace base classes as they die
-        for (var i in Memory.room_strategy[roomName].spawn_priority) {
-            r = Memory.room_strategy[roomName.spawn_priority[i]
-            number = f.get([Memory, 'room_strategy', roomName, r, 'desired_number'])
-            if ( number && ((! role_count[r]) || role_count[r].length < number)) {
-                var spawnAt = spawn
-                if ( f.get([Memory, 'room_strategy', roomName, r, 'spawn_room'])) {
-                    spawnAt = Game.rooms[ Memory.room_strategy[roomName][r].spawn_room ].find(FIND_MY_SPAWNS)[0]
-                }
-                if (spawnAt) {
-                    
-                    //console.log("wanna spawn a "+r+" in room "+spawnAt.room.name+" for "+roomName)
-                    
-                    spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
-                    break;
+        var spawn_order = f.get([Memory, 'room_strategy', roomName, 'spawn_priority'])
+        if (spawn_order) {
+            for (var i in spawn_order) {
+                r = Memory.room_strategy[roomName].spawn_priority[i]
+                number = f.get([Memory, 'room_strategy', roomName, r, 'desired_number'])
+                if ( number && ((! role_count[r]) || role_count[r].length < number)) {
+                    var spawnAt = spawn
+                    if ( f.get([Memory, 'room_strategy', roomName, r, 'spawn_room'])) {
+                        spawnAt = Game.rooms[ Memory.room_strategy[roomName][r].spawn_room ].find(FIND_MY_SPAWNS)[0]
+                    }
+                    if (spawnAt) {
+                        
+                        //console.log("wanna spawn a "+r+" in room "+spawnAt.room.name+" for "+roomName)
+                        
+                        spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
+                        break;
+                    }
                 }
             }
         }
