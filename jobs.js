@@ -61,7 +61,7 @@ check_solomining: function(c, flag_name){
 
     c.job = 'check_solomining'
 
-    if ( (! Game.flags[flag_name]) || f.get_energy(c) == c.carryCapacity)
+    if ( (! Game.flags[flag_name]) || (c.carryCapacity > 0 && f.get_energy(c) == c.carryCapacity))
         return false
 
     var target = Game.flags[flag_name].pos.findInRange(FIND_SOURCES, 1)[0] //GOTCHA: It return a list, in this case a list of one...
@@ -89,8 +89,8 @@ check_ondropped: function(c){
     if (!dropped)
     	return false
     r = c.pickup(dropped)
-    //console.log('picking up: '+r)
-    return dropped
+    console.log('picking up: '+r)
+    return r==OK
 },
 
 check_dropped: function(c){

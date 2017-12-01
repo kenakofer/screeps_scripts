@@ -5,7 +5,6 @@ module.exports = {
 role_solominer: {
 
     run: function(c) {
-        jobs.check_ondropped(c);
         //Alternate between storing in storage/containers and storing in links. Don't check every turn to save CPU
         if (Game.time % 4 == 0)
             jobs.check_store(c)
@@ -14,6 +13,7 @@ role_solominer: {
         
         jobs.check_solomining(c, c.memory.mining_flag)
         || jobs.check_construction(c, true) //Set the nomove parameter so they don't wander away. This is useful mainly for constructing the containers they will store in.
+        //jobs.check_ondropped(c);
     },
 },
 
@@ -34,21 +34,20 @@ role_claimer: {
 
 role_harvester: {
     run: function(c) {
-        jobs.check_ondropped(c);
         jobs.check_invaders(c) || 
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||
         jobs.check_towers(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
-        (c.job = 'Nothing to do') 
+        (c.job = 'Nothing to do');
+
+        jobs.check_ondropped(c);
     },
 },
 
 role_restocker: {
     run: function(c) {
-        jobs.check_ondropped(c);
-
         jobs.check_withdraw(c) ||
         jobs.check_mining(c) ||
         jobs.check_spawn(c) ||
@@ -57,7 +56,9 @@ role_restocker: {
         jobs.check_dropped(c) ||
         jobs.check_home_room(c) ||
         jobs.check_gathering_place(c) ||
-        (c.job = 'Nothing to do') 
+        (c.job = 'Nothing to do');
+
+        jobs.check_ondropped(c);
 
         //console.log(c.name+': '+s)
     },
@@ -76,22 +77,21 @@ role_guard: {
 role_upgrader: {
     run: function(c) {
         //c.say('hi')
-        jobs.check_ondropped(c);
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
         jobs.check_mining(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
-        (c.job = 'Nothing to do')
+        (c.job = 'Nothing to do');
 
+        jobs.check_ondropped(c);
     },
 },
 
 role_builder: {
     run: function(c) {
         //c.say('hi')
-        jobs.check_ondropped(c);
         jobs.check_invaders(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
         jobs.check_mining(c) ||
@@ -101,7 +101,9 @@ role_builder: {
         //check_towers(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
-        (c.job = 'Nothing to do') 
+        (c.job = 'Nothing to do');
+
+        jobs.check_ondropped(c);
 
     },
 },

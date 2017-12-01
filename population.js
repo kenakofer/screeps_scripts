@@ -59,6 +59,7 @@ check_population: function(){
             if (! f.get([Game, 'creeps', [Memory, f_name]]) 
                     || f.imminent_death(Game.creeps[Memory[f_name]])
             ) {
+                //There is no creep (or soon will be no creep) mining this location, so let's create one!
                 
                 var mine_in_room = Game.flags[f_name].room.name
                 var spawn_in_room = mine_in_room
@@ -68,7 +69,6 @@ check_population: function(){
                 }
                 var spawn = Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS)[0];
                 
-                //There is no creep mining this location, so let's create one!
                 parts = Memory.room_strategy[roomName]['role_solominer'].parts
                 var r = spawn.createCreep(parts, {role: "role_solominer", home_room: mine_in_room, mining_flag: f_name});
                 if (_.isString(r))
@@ -76,13 +76,19 @@ check_population: function(){
             }
         }
         //Create creep to claim a controller
-        //TODO where? it matters...
         if (f_name.includes('claim') && ( !('role_claimer' in role_count)) && (! f.get([Game, 'creeps', [Memory, f_name]]))){
             //There is no creep claiming this location, so let's create one!
-            console.log("Wanna make a claimer for "+f_name)
-            var r = Game.spawns.Spawn1.createCreep(roles['role_claimer'].parts, {role: "role_claimer", home_room: 'W7N3', claiming_flag: f_name});
-            if (_.isString(r)){
-                Memory[f_name] = r;
+                
+            var claim_room = Game.flags[f_name].room.name
+            var spawn_room = f.get([Memory.room_strategy, claim_room, 'role_claimer', 'spawn_room'])
+            if (spawn_room){
+                console.log("Wanna make a claimer for "+f_name+' in '+spawn_room)
+                var spawn = Game.rooms[spawn_room].find(FIND_MY_SPAWNS)[0]
+
+                var r = spawn.createCreep([CLAIM, MOVE], {role: "role_claimer", home_room: 'claim_room', claiming_flag: f_name});
+                if (_.isString(r)){
+                    Memory[f_name] = r;
+                }
             }
         }
         
