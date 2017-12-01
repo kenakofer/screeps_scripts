@@ -5,40 +5,62 @@ module.exports = {
 
 
 run_tower: function(t) {
+
+
+    // The inactivity level for the tower corresponds to how long it's been since the
+    // tower did anything. It will make fewer checks if it hasn't done anything in a while
+    if (! f.get([Memory, t.id, 'inactive_level'])) Memory[t.id] = {'inactive_level':0, }
     
+    var inactive_level = f.get([Memory, t.id, 'inactive_level'])
+    //console.log(inactive_level)
+
     //First attack enemies in room
     var enemy = t.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
     if (enemy) {
+        Memory[t.id].inactive_level=0 
         t.attack(enemy)
         return
     }
-    //Next look for my injured creeps
-    var injuredCreep = t.pos.findClosestByRange(FIND_MY_CREEPS, {
-        filter: (c) => c.hits < c.hitsMax
-    })
-    if (injuredCreep){
-        t.heal(injuredCreep)
-        return
-    }
-    if (t.energy < t.energyCapacity/2){
-        //Don't move on to repairing things, but conserve energy in case of attack
-        return
-    }
-    //Repair broken structures
-    var roomName = t.room.name
-    var closestDamaged = t.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: (s) => {
-        	if (s.hits < s.hitsMax - 500) {
-        		desired_hits = f.get([Memory, 'room_strategy', roomName, s.structureType, 'desired_hits'])
-        		if (! desired_hits)
-        			desired_hits = 30000
-        		return s.hits < desired_hits
-        	}
-        	return false
+
+    //Do all the following conditional on how inactive the tower has been
+    if (inactive_level==0 || (inactive_level <= 3 && Game.time%5 === 1) || (Game.time%25 === 1)){
+
+        //Next look for my injured creeps
+        var injuredCreep = t.pos.findClosestByRange(FIND_MY_CREEPS, {
+            filter: (c) => c.hits < c.hitsMax
+        })
+        if (injuredCreep){
+            Memory[t.id].inactive_level=0
+            t.heal(injuredCreep)
+            return
         }
-    });
-    if (closestDamaged) {
-        t.repair(closestDamaged);
+        if (t.energy < t.energyCapacity/2){
+            //Don't move on to repairing things, but conserve energy in case of attack
+            //If we made it here, there is nothing to do at the moment, so our inactive level can go up
+            Memory[t.id].inactive_level++;
+            return
+        }
+        //Repair broken structures
+        var roomName = t.room.name
+        var closestDamaged = t.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (s) => {
+                    if (s.hits < s.hitsMax - 500) {
+                            desired_hits = f.get([Memory, 'room_strategy', roomName, s.structureType, 'desired_hits'])
+                            if (! desired_hits)
+                                    desired_hits = 30000
+                            return s.hits < desired_hits
+                    }
+                    return false
+            }
+        });
+        if (closestDamaged) {
+            Memory[t.id].inactive_level=0
+            t.repair(closestDamaged);
+            return
+        }
+
+        //If we made it here, there is nothing to do at the moment, so our inactive level can go up
+        Memory[t.id].inactive_level++;
     }
 },
 

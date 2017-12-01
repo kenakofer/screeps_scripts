@@ -61,6 +61,6 @@ cpuTrack: function(){
 
     if (Memory.printCpu)
 		console.log(JSON.stringify(Memory.cpuTrack))
-}
+},
 
 };
