@@ -17,18 +17,17 @@ module.exports.loop = function () {
 
             //c.say(c.memory.role)
 
-            //TODO use get
-	        if ( f.get([roles, c.memory.role, 'run'])) {
-	            
-	            roles[c.memory.role].run(c)
-	        }
-	        else {
-	            console.log(c.name+" has no recognized role with a run function: "+c.memory.role)
-	            roles['role_harvester'].run(c)
-	        }
-	    }
+            if ( f.get([roles, c.memory.role, 'run'])) {
+                
+                roles[c.memory.role].run(c)
+            }
+            else {
+                console.log(c.name+" has no recognized role with a run function: "+c.memory.role)
+                roles['role_harvester'].run(c)
+            }
+        }
 
-            c.memory.job = c.job
+        c.memory.job = c.job
     }
 
     if (Game.time % 3 === 1)

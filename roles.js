@@ -1,4 +1,5 @@
 var jobs = require('jobs')
+var f = require('f')
 
 module.exports = {
 
@@ -28,12 +29,13 @@ role_claimer: {
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do') 
-        
     },
 },
 
 role_harvester: {
     run: function(c) {
+        jobs.check_ondropped(c);
+
         jobs.check_invaders(c) || 
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||
@@ -41,26 +43,34 @@ role_harvester: {
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do');
-
-        jobs.check_ondropped(c);
     },
 },
 
 role_restocker: {
     run: function(c) {
-        jobs.check_withdraw(c) ||
-        jobs.check_mining(c) ||
-        jobs.check_spawn(c) ||
-        jobs.check_towers(c) ||
-        jobs.check_terminal(c) ||
-        jobs.check_dropped(c) ||
-        jobs.check_home_room(c) ||
-        jobs.check_gathering_place(c) ||
-        (c.job = 'Nothing to do');
+        if (! f.get([Memory, c.id, 'inactive_level'])) Memory[c.id] = {'inactive_level':0, }
+        var il = f.get([Memory, c.id, 'inactive_level'])
+        console.log(il)
 
         jobs.check_ondropped(c);
 
-        //console.log(c.name+': '+s)
+        if ( il==0 || (Game.time%5 === 2)){
+            r =
+            jobs.check_withdraw(c) ||
+            jobs.check_mining(c) ||
+            jobs.check_spawn(c) ||
+            jobs.check_towers(c) ||
+            jobs.check_terminal(c) ||
+            jobs.check_dropped(c) ||
+            jobs.check_home_room(c) ||
+            //jobs.check_store(c, [STRUCTURE_STORAGE]) ||
+            jobs.check_gathering_place(c)
+            if (r) Memory[c.id].inactive_level=0
+            else {
+                Memory[c.id].inactive_level++
+                (c.job = 'Nothing to do');
+            }
+        }
     },
 },
 
@@ -76,7 +86,8 @@ role_guard: {
 
 role_upgrader: {
     run: function(c) {
-        //c.say('hi')
+        jobs.check_ondropped(c);
+
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
@@ -84,14 +95,13 @@ role_upgrader: {
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do');
-
-        jobs.check_ondropped(c);
     },
 },
 
 role_builder: {
     run: function(c) {
-        //c.say('hi')
+        jobs.check_ondropped(c);
+
         jobs.check_invaders(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
         jobs.check_mining(c) ||
@@ -102,9 +112,6 @@ role_builder: {
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do');
-
-        jobs.check_ondropped(c);
-
     },
 },
 
@@ -126,18 +133,17 @@ role_courier: {
 
 // A role whose goal is that every controller should be signed by me. 
 role_signer: {
-	message: function(c) {
-		return "Signed by "+c.name+" in service of kenanbit, The One True Instructor, from whom all scripting flows."
-	},
-	parts: [MOVE],
+    parts: [MOVE],
+    message: function(c) {
+        return "Signed by "+c.name+" in service of kenanbit, The One True Instructor, from whom all scripting flows."
+    },
 
-	run: function(c) {
-
-		if (functions.get([Game.flags, c.memory.flag])){
-			c.notifyWhenAttacked(false)
-			jobs.sign_controller(c, Game.flags[c.memory.flag].pos.roomName, this.message(c))
-		}
-	},
+    run: function(c) {
+        if (functions.get([Game.flags, c.memory.flag])){
+            c.notifyWhenAttacked(false)
+            jobs.sign_controller(c, Game.flags[c.memory.flag].pos.roomName, this.message(c))
+        }
+    },
 }
 
 }

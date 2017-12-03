@@ -24,7 +24,7 @@ census: function(justCount, home_room){
 },
 
 check_population: function(){
-    for (roomName in Game.rooms) {
+    for (roomName in Memory.room_strategy) {
         var spawn = Game.rooms[roomName].find(FIND_MY_SPAWNS)[0]
         var role_count = this.census(false, roomName)
         //Replace base classes as they die
@@ -69,7 +69,7 @@ check_population: function(){
                 }
                 var spawn = Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS)[0];
                 
-                parts = Memory.room_strategy[roomName]['role_solominer'].parts
+                parts = Memory.room_strategy[mine_in_room]['role_solominer'].parts
                 var r = spawn.createCreep(parts, {role: "role_solominer", home_room: mine_in_room, mining_flag: f_name});
                 if (_.isString(r))
                     Memory[f_name] = r
@@ -79,9 +79,12 @@ check_population: function(){
         if (f_name.includes('claim') && ( !('role_claimer' in role_count)) && (! f.get([Game, 'creeps', [Memory, f_name]]))){
             //There is no creep claiming this location, so let's create one!
                 
-            var claim_room = Game.flags[f_name].room.name
+            var claim_room = f.get([Game, 'flags', f_name, 'pos','roomName'])
             var spawn_room = f.get([Memory.room_strategy, claim_room, 'role_claimer', 'spawn_room'])
-            if (spawn_room){
+            if (!spawn_room) {
+                console.log("Set a strategy in "+claim_room+" to know where to spawn the claimer")
+
+            } else {
                 console.log("Wanna make a claimer for "+f_name+' in '+spawn_room)
                 var spawn = Game.rooms[spawn_room].find(FIND_MY_SPAWNS)[0]
 

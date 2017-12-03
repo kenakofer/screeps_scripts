@@ -5,6 +5,7 @@ module.exports = {
 check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
     
     c.job = 'check_withdraw'
+    if (c.picked_up) return false
 
     if (! leaveEnergyAmount)
         leaveEnergyAmount=0
@@ -90,7 +91,11 @@ check_ondropped: function(c){
     	return false
     r = c.pickup(dropped)
     console.log('picking up: '+r)
-    return r==OK
+    if (r==OK){
+        c.picked_up=true
+        return OK
+    }
+    return false
 },
 
 check_dropped: function(c){
@@ -106,8 +111,11 @@ check_dropped: function(c){
         c.moveTo(dropped)
         return dropped
     }
-    if (r == OK)
+    if (r == OK) {
+        c.picked_up=true
         return dropped
+    }
+    return false
 },
 
 check_terminal: function(c) {
@@ -374,22 +382,23 @@ check_construction: function(c, nomove){
     return false
 },
 
-check_store: function(c){
+check_store: function(c, types){
+    types = types || [STRUCTURE_STORAGE, STRUCTURE_CONTAINER]
+    console.log(types)
 
     c.job = 'check_store'
 
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (s) =>  (s.structureType == STRUCTURE_STORAGE ||
-                            s.structureType == STRUCTURE_CONTAINER) &&
-                            s.store.energy < s.storeCapacity
-                            
+            filter: (s) =>  (_.contains(types, s.structureType) &&
+                            s.store.energy < s.storeCapacity)
         });
         //TODO change or remove this to help solominers not wander away
         if (store) {
+            console.log(store)
             r = c.transfer(store, "energy")
             //Only go out of your way to store energy if you're full, and the store is close by
-            if (r == ERR_NOT_IN_RANGE && f.get_energy(c) == c.carryCapacity && c.pos.getRangeTo(store) < 5){
+            if (r == ERR_NOT_IN_RANGE && _.sum(c.carry) == c.carryCapacity && c.pos.getRangeTo(store) < 5){
                 c.moveTo(store)
                 return store
             }
