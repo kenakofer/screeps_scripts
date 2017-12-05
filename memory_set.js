@@ -82,4 +82,14 @@ module.exports = {
             'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]}
         }
     },
+
+    storage_at_spawn: function(storage_object){
+        Memory[storage_object.id] = {
+            'store_spawn_full': 1,
+            'store_spawn_empty': 1,
+            'withdraw_spawn_full': ['role_upgrader','role_builder'],
+            'withdraw_spawn_empty': ['role_restocker'],
+        }
+        
+    }
 }

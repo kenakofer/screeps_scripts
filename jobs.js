@@ -28,6 +28,7 @@ check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
 
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (s) => types.includes( s.structureType)
+                        && f.can_withdraw(c, s)
                 	&& f.get_energy(s) > needs + leaveEnergyAmount 
                 	&& (!  (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('sender'))))               
         });
@@ -90,7 +91,7 @@ check_ondropped: function(c){
     if (!dropped)
     	return false
     r = c.pickup(dropped)
-    console.log('picking up: '+r)
+    //console.log('picking up: '+r)
     if (r==OK){
         c.picked_up=true
         return OK
@@ -382,9 +383,9 @@ check_construction: function(c, nomove){
     return false
 },
 
-check_store: function(c, types){
+check_store: function(c, types, distance){
     types = types || [STRUCTURE_STORAGE, STRUCTURE_CONTAINER]
-    console.log(types)
+    distance = distance || 5
 
     c.job = 'check_store'
 
@@ -395,10 +396,11 @@ check_store: function(c, types){
         });
         //TODO change or remove this to help solominers not wander away
         if (store) {
-            console.log(store)
+            console.log('here with role '+c.memory.role)
+            console.log(c.pos.getRangeTo(store))
             r = c.transfer(store, "energy")
             //Only go out of your way to store energy if you're full, and the store is close by
-            if (r == ERR_NOT_IN_RANGE && _.sum(c.carry) == c.carryCapacity && c.pos.getRangeTo(store) < 5){
+            if (r == ERR_NOT_IN_RANGE && _.sum(c.carry) == c.carryCapacity && c.pos.getRangeTo(store) < distance){
                 c.moveTo(store)
                 return store
             }

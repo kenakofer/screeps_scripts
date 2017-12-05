@@ -50,7 +50,7 @@ role_restocker: {
     run: function(c) {
         if (! f.get([Memory, c.id, 'inactive_level'])) Memory[c.id] = {'inactive_level':0, }
         var il = f.get([Memory, c.id, 'inactive_level'])
-        console.log(il)
+        //console.log(il)
 
         jobs.check_ondropped(c);
 
@@ -63,14 +63,15 @@ role_restocker: {
             jobs.check_terminal(c) ||
             jobs.check_dropped(c) ||
             jobs.check_home_room(c) ||
-            //jobs.check_store(c, [STRUCTURE_STORAGE]) ||
+            jobs.check_store(c, [STRUCTURE_STORAGE], 10) ||
             jobs.check_gathering_place(c)
-            if (r) Memory[c.id].inactive_level=0
-            else {
-                Memory[c.id].inactive_level++
-                (c.job = 'Nothing to do');
+            if (r) {
+                Memory[c.id].inactive_level=0
+                return
             }
         }
+        Memory[c.id].inactive_level++
+        (c.job = 'Nothing to do');
     },
 },
 

@@ -6,7 +6,7 @@ Takes the field address of some desired value, and either returns it, or returns
 get: function(list) {
 	if (arguments.length !== 1){
 		message = "Function takes exactly one argument! Did you forget to make it a list?"
-		console.log(message);
+
 		throw message;
 	}
 	if (typeof list !== 'object')
@@ -62,5 +62,21 @@ cpuTrack: function(){
     if (Memory.printCpu)
 		console.log(JSON.stringify(Memory.cpuTrack))
 },
+
+//Check if withdraw from a container/storage s by creep c is allowed and feasible
+can_withdraw: function(c, s){
+    rule = 'withdraw_spawn_empty'
+    if (s.room.energyAvailable === s.room.energyCapacityAvailable) rule = 'withdraw_spawn_full'
+
+    //console.log(rule)
+    //console.log(this.get([Memory, s.id, rule]))
+    //console.log(c.memory.role)
+
+    rule_followed = 
+        _.contains([1,undefined], this.get([Memory, s.id, rule])) || 
+        _.contains(this.get([Memory, s.id, rule]), c.memory.role)
+    return rule_followed
+
+}
 
 };
