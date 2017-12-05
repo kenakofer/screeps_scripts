@@ -2,7 +2,7 @@ var roles = require('roles')
 var f = require('f')
 var population = require('population')
 var structures = require('structures')
-var room_control = require('room_control')
+//var room_control = require('room_control')
 
 module.exports.loop = function () {
 
@@ -11,9 +11,9 @@ module.exports.loop = function () {
     if (! Memory.room_strategy){ Memory.room_strategy={} }
 
     //Run each rooms main control
-    for (roomName in Memory.room_strategy){
-        room_control.run_room(roomName)
-    }
+    //for (roomName in Memory.room_strategy){
+    //    room_control.run_room(roomName)
+    //}
 
     for (var name in Game.creeps){
         var c = Game.creeps[name];

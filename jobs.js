@@ -388,6 +388,7 @@ check_store: function(c, types, distance){
     distance = distance || 5
 
     c.job = 'check_store'
+    console.log(c.memory.role + 'check_store')
 
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -396,13 +397,14 @@ check_store: function(c, types, distance){
         });
         //TODO change or remove this to help solominers not wander away
         if (store) {
-            console.log('here with role '+c.memory.role)
-            console.log(c.pos.getRangeTo(store))
+            console.log(store)
             r = c.transfer(store, "energy")
-            //Only go out of your way to store energy if you're full, and the store is close by
-            if (r == ERR_NOT_IN_RANGE && _.sum(c.carry) == c.carryCapacity && c.pos.getRangeTo(store) < distance){
-                c.moveTo(store)
-                return store
+            //Only go out of your way to store energy if you're full or a restocker, and the store is close by
+            if (r == ERR_NOT_IN_RANGE && 
+                (_.sum(c.carry) == c.carryCapacity || c.memory.role=='role_restocker')
+                && c.pos.getRangeTo(store) < distance){
+                    c.moveTo(store)
+                    return store
             }
             if (r==OK) {
                 return store

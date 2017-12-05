@@ -83,6 +83,19 @@ module.exports = {
         }
     },
 
+    //For controller level 5. Links are now assumed. This lightweight setup should help you fill up a storage with energy
+    controller5: function(roomName){
+        Memory.room_strategy[roomName]={
+            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
+            'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
+            'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK, TOUGH,TOUGH,TOUGH,TOUGH] },
+            'role_upgrader': {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
+            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY] },
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
+        }
+    },
+
     storage_at_spawn: function(storage_object){
         Memory[storage_object.id] = {
             'store_spawn_full': 1,
