@@ -88,7 +88,8 @@ check_ondropped: function(c){
     c.job = 'check_ondropped'
 
     var dropped = c.pos.findInRange(FIND_DROPPED_RESOURCES, 1)[0]
-    if (!dropped)
+    if (!dropped || 
+        (dropped.resourceType === RESOURCE_ENERGY && dropped.amount < c.carryCapacity))
     	return false
     r = c.pickup(dropped)
     //console.log('picking up: '+r)
