@@ -45,9 +45,10 @@ run_tower: function(t) {
         var closestDamaged = t.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (s) => {
                     if (s.hits < s.hitsMax - 500) {
-                            desired_hits = f.get([Memory, 'room_strategy', roomName, s.structureType, 'desired_hits'])
-                            if (! desired_hits)
-                                    desired_hits = 30000
+                            //desired_hits = f.get([Memory, 'room_strategy', roomName, s.structureType, 'desired_hits'])
+                            //if (! desired_hits)
+                            //        desired_hits = 10000
+                            desired_hits = f.get_desired_hits(s)
                             return s.hits < desired_hits
                     }
                     return false

@@ -40,6 +40,7 @@ role_harvester: {
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||
         jobs.check_towers(c) ||
+        jobs.check_construction(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do');
@@ -104,9 +105,9 @@ role_builder: {
         jobs.check_ondropped(c);
 
         jobs.check_invaders(c) ||
+        jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
         jobs.check_mining(c) ||
-        jobs.check_home_room(c) ||
         jobs.check_construction(c) ||
         //check_spawn(c) ||
         //check_towers(c) ||

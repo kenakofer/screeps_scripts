@@ -6,6 +6,7 @@
 module.exports = {
     
     //This is a good method to call for the first ever room, to get everything up and running
+    // e.g. require('memory_set').controller1_basic('E27S26')
     controller1_basic: function(roomName){
         Memory.room_strategy[roomName]={
             'spawn_priority': ['role_harvester', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
@@ -37,7 +38,7 @@ module.exports = {
         Memory.room_strategy[roomName]={
             'spawn_priority':['role_claimer', 'role_builder'],
             'role_claimer':{'spawn_room':fromRoom},
-            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY], 'desired_number':1}
+            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':1}
         }
     },
     
@@ -89,9 +90,9 @@ module.exports = {
             'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
-            'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK, TOUGH,TOUGH,TOUGH,TOUGH] },
+            'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
             'role_upgrader': {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
-            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY] },
+            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
             'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
         }
     },
@@ -104,5 +105,19 @@ module.exports = {
             'withdraw_spawn_empty': ['role_restocker'],
         }
         
+    },
+
+    //eg require('memory_set').increase_desired_hits('E27S24', STRUCTURE_WALL, 10000)
+    increase_desired_hits: function(roomName, structure_type, amount){
+        amount = amount || 5000
+        mem_obj = Memory.room_strategy[roomName][structure_type]
+        if (mem_obj === undefined)
+            Memory.room_strategy[roomName][structure_type] = {desired_hits: 1000+amount}
+        else if (mem_obj['desired_hits'] === undefined)
+            Memory.room_strategy[roomName][structure_type]['desired_hits'] = 1000+amount
+        else
+            Memory.room_strategy[roomName][structure_type]['desired_hits'] += amount
+        return Memory.room_strategy[roomName][structure_type].desired_hits
+
     }
 }

@@ -25,7 +25,10 @@ census: function(justCount, home_room){
 
 check_population: function(){
     for (roomName in Memory.room_strategy) {
-        var spawn = Game.rooms[roomName].find(FIND_MY_SPAWNS)[0]
+        var room = Game.rooms[roomName]
+        var spawn = undefined
+        if (room)
+            spawn = Game.rooms[roomName].find(FIND_MY_SPAWNS)[0]
         var role_count = this.census(false, roomName)
         //Replace base classes as they die
         var spawn_order = f.get([Memory, 'room_strategy', roomName, 'spawn_priority'])

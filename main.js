@@ -41,6 +41,7 @@ module.exports.loop = function () {
 
 
     //TODO put this in structures.js?
+    //Not a significant portion of cpu
     var towers = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_TOWER); 
     for (i = 0; i < towers.length; i++) { structures.run_tower(towers[ i ]); }
     

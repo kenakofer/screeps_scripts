@@ -77,6 +77,19 @@ can_withdraw: function(c, s){
         _.contains(this.get([Memory, s.id, rule]), c.memory.role)
     return rule_followed
 
+},
+
+default_desired_hits: {
+    [STRUCTURE_WALL]: 1000,
+    [STRUCTURE_RAMPART]: 1000,
+    [STRUCTURE_CONTAINER]: 50000
+    //Structures not named here default to full value
+},
+get_desired_hits: function(structure){
+    var value = this.get([Memory, 'room_strategy', structure.pos.roomName, structure.structureType, 'desired_hits'])
+    if (value === undefined) value = this.default_desired_hits[structure.structureType]
+    if (value === undefined) value = Infinity
+    return value
 }
 
 };
