@@ -7,10 +7,15 @@ role_solominer: {
 
     run: function(c) {
         //Alternate between storing in storage/containers and storing in links. Don't check every turn to save CPU
-        if (Game.time % 4 == 0)
-            jobs.check_store(c)
-        else if (Game.time % 4 == 2)
-            jobs.check_store_link(c)
+        if (! c.memory.mining_flag.includes('link')){
+            if (Game.time % 4 == 0)
+                jobs.check_store(c)
+            else if (Game.time % 4 == 2)
+                jobs.check_store_link(c)
+        } else if (Game.time % 2 == 0) {
+            //Link is in the flag name, so prioritize the link, storage is overflow
+            jobs.check_store_link(c) || jobs.check_store(c)        
+        }
         
         jobs.check_solomining(c, c.memory.mining_flag)
         || jobs.check_construction(c, true) //Set the nomove parameter so they don't wander away. This is useful mainly for constructing the containers they will store in.
@@ -64,7 +69,7 @@ role_restocker: {
             jobs.check_terminal(c) ||
             jobs.check_dropped(c) ||
             jobs.check_home_room(c) ||
-            jobs.check_store(c, [STRUCTURE_STORAGE], 10) ||
+            jobs.check_store(c, [STRUCTURE_STORAGE], 20) ||
             jobs.check_gathering_place(c)
             if (r) {
                 Memory[c.id].inactive_level=0
