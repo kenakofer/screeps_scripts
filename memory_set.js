@@ -72,14 +72,14 @@ module.exports = {
     },
 
     //For controller level 4, to minimize the creep count for CPU
-    controller4_minimal: function(roomName){
+    controller4: function(roomName){
         Memory.room_strategy[roomName]={
             'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
-            'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE, CARRY,CARRY,CARRY,CARRY] },
+            'role_restocker':{'desired_number':2, 'parts':[MOVE,MOVE, CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
-            'role_upgrader': {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
-            'role_builder':  {'desired_number':2, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
+            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
+            'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
             'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]}
         }
     },
@@ -91,18 +91,19 @@ module.exports = {
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
-            'role_upgrader': {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
-            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
+            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
+            'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
             'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
         }
     },
 
-    storage_at_spawn: function(storage_object){
+    //Example: require('memory_set').storage(Game.getObjectById('5a2472801369731ed9a3ca7e'))
+    storage: function(storage_object){
         Memory[storage_object.id] = {
             'store_spawn_full': 1,
             'store_spawn_empty': 1,
             'withdraw_spawn_full': ['role_upgrader','role_builder'],
-            'withdraw_spawn_empty': ['role_restocker'],
+            'withdraw_spawn_empty': 1,
         }
         
     },
