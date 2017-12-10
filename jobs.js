@@ -17,18 +17,21 @@ check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
     if (noCheckEmpty || f.get_energy(c) == 0) {
 
     	//Check these structures, and only check terminals if the room has below half a storage full
-    	types = [STRUCTURE_CONTAINER, STRUCTURE_LINK]
-    	if (! (f.get_energy(c.room.storage) > 500000))
-    		types.push(STRUCTURE_TERMINAL)
+    	//types = [STRUCTURE_CONTAINER, STRUCTURE_LINK]
+    	//if (! (f.get_energy(c.room.storage) > 500000))
+    	//	types.push(STRUCTURE_TERMINAL)
     	//Only allow restockers to take from storage if we are above half storage or if we don't have much energy in the terminal
-    	if (c.memory.role !== 'role_restocker'
-    			|| f.get_energy(c.room.terminal) < c.carryCapacity
+        //TODO this should go into the can_withdraw function
+    	/*if (c.memory.role !== 'role_restocker'
+    			|| f.get_energy(c.room.terminal) < 1000
     			|| f.get_energy(c.room.storage) > 500000)
     		types.push(STRUCTURE_STORAGE)
+                */
 
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (s) => types.includes( s.structureType)
-                        && f.can_withdraw(c, s)
+                filter: (s) => 
+                        //types.includes( s.structureType) &&
+                        f.can_withdraw2(c, s)
                 	&& f.get_energy(s) > needs + leaveEnergyAmount 
                 	&& (!  (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('sender'))))               
         });
@@ -140,7 +143,7 @@ check_terminal: function(c) {
                     //Energy deficit here, so take from the terminal and place into storage
                     from = terminal; to = storage
             } else {
-                    //Energy balanced here. No giving or receiving
+                    //Energy balanced here, with storage between 1/2 and 2/3 full of energy. No giving or receiving
                     return false
             }
 
@@ -256,8 +259,10 @@ check_spawn: function(c){
 
     c.job = 'check_spawn'
 
-    if (f.get_energy(c) == 0)
-            return false
+    if (f.get_energy(c) == 0 || (! Memory.room_strategy[c.room.name].energy_need_filled) ){
+        //If the creep has no energy or the spawn system is already full, we can't do it
+        return false
+    }
     var target = c.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => {
             return (s.structureType == STRUCTURE_EXTENSION ||
@@ -476,7 +481,6 @@ check_store: function(c, types, distance){
             filter: (s) =>  (_.contains(types, s.structureType) &&
                             s.store.energy < s.storeCapacity)
         });
-        //TODO change or remove this to help solominers not wander away
         if (store) {
             //console.log(store)
             r = c.transfer(store, "energy")

@@ -67,7 +67,7 @@ cpuTrack: function(){
 can_withdraw: function(c, s){
     rule = 'withdraw_spawn_empty'
     if (s.room.energyAvailable === s.room.energyCapacityAvailable) rule = 'withdraw_spawn_full'
-
+    
     //console.log(rule)
     //console.log(this.get([Memory, s.id, rule]))
     //console.log(c.memory.role)
@@ -76,7 +76,36 @@ can_withdraw: function(c, s){
         _.contains([1,undefined], this.get([Memory, s.id, rule])) || 
         _.contains(this.get([Memory, s.id, rule]), c.memory.role)
     return rule_followed
+},
 
+//Check if withdraw from a container/storage s by creep c is allowed and feasible
+//TODO this function is WAY too heavy on the cpu
+can_withdraw2: function(c, s){
+   
+    //First check for an explicitly set allow or disallow
+    if (this.get([Memory, s.id, 'can_withdraw']) && this.get([Memory, s.id, 'can_withdraw']).contains(c.memory.role)){
+        return true
+    } else if (this.get([Memory, s.id, 'cannot_withdraw']) 
+            && _.contains(this.get([Memory, s.id, 'cannot_withdraw']), c.memory.role)){
+        return false
+    }
+
+    // Restockers
+    if (c.memory.role == 'role_restocker') {
+        var towers_need_filled = Memory.room_strategy[c.room.name].towers_need_filled
+        var energy_need_filled = Memory.room_strategy[c.room.name].energy_need_filled
+        if (towers_need_filled || energy_need_filled){
+            //Give blanket approval to restockers trying to restock the things
+            return true
+        } else if (s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL){
+            //If they aren't trying to restock the things, they should be 
+            //depositing in storage and terminal, not taking from it
+            //console.log(c.name)
+            return false 
+        }
+    }
+    //Everything else?
+    return true
 },
 
 default_desired_hits: {

@@ -23,8 +23,8 @@ module.exports.loop = function () {
             //c.say(c.memory.role)
 
             if ( f.get([roles, c.memory.role, 'run'])) {
-                
-                roles[c.memory.role].run(c)
+                //if (c.memory.role == 'role_upgrader')
+                    roles[c.memory.role].run(c)
             }
             else {
                 console.log(c.name+" has no recognized role with a run function: "+c.memory.role)
@@ -37,6 +37,16 @@ module.exports.loop = function () {
 
     if (Game.time % 3 === 1)
     	population.check_population()
+    if (Game.time % 3 === 2){
+        for (var roomName in Game.rooms){
+            var room = Game.rooms[roomName]
+            Memory.room_strategy[roomName]['energy_need_filled'] = room.energyAvailable < room.energyCapacityAvailable
+            Memory.room_strategy[roomName]['towers_need_filled'] = 
+                room.find(FIND_STRUCTURES, {
+                    filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
+                })[0]
+        }
+    }
     
 
 
