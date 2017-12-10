@@ -64,16 +64,43 @@ check_population: function(){
             ) {
                 //There is no creep (or soon will be no creep) mining this location, so let's create one!
                 
-                var mine_in_room = Game.flags[f_name].room.name
+                var mine_in_room = Game.flags[f_name].pos.roomName
                 var spawn_in_room = mine_in_room
                 
                 if (f.get([Memory.room_strategy, mine_in_room, 'role_solominer', 'spawn_room'])) {
                     spawn_in_room = Memory.room_strategy[mine_in_room].role_solominer.spawn_room
                 }
+                if (Game.rooms[spawn_in_room]){
+                    var spawn = f.get([Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS), 0])
+                    if (spawn){
+                    
+                        parts = Memory.room_strategy[mine_in_room]['role_solominer'].parts
+                        var r = spawn.createCreep(parts, {role: "role_solominer", home_room: mine_in_room, mining_flag: f_name});
+                        if (_.isString(r))
+                            Memory[f_name] = r
+                    } else {
+                        console.log('You need to create a room_stategy to tell where to spawn the solominer for '+mine_in_room)
+                    }
+                }
+            }
+        }
+        //Create trucker
+        if (f_name.includes('trucker_pickup')){
+            if (! f.get([Game, 'creeps', [Memory, f_name]]) 
+                    || f.imminent_death(Game.creeps[Memory[f_name]])
+            ) {
+                //There is no creep (or soon will be no creep) trucking this location, so let's create one!
+                
+                var mine_in_room = Game.flags[f_name].pos.roomName
+                var spawn_in_room = mine_in_room
+                
+                if (f.get([Memory.room_strategy, mine_in_room, 'role_trucker', 'spawn_room'])) {
+                    spawn_in_room = Memory.room_strategy[mine_in_room].role_trucker.spawn_room
+                }
                 var spawn = Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS)[0];
                 
-                parts = Memory.room_strategy[mine_in_room]['role_solominer'].parts
-                var r = spawn.createCreep(parts, {role: "role_solominer", home_room: mine_in_room, mining_flag: f_name});
+                parts = Memory.room_strategy[mine_in_room]['role_trucker'].parts
+                var r = spawn.createCreep(parts, {role: "role_trucker", home_room: mine_in_room, drop_room: spawn_in_room, pickup_flag: f_name});
                 if (_.isString(r))
                     Memory[f_name] = r
             }
@@ -91,7 +118,7 @@ check_population: function(){
                 console.log("Wanna make a claimer for "+f_name+' in '+spawn_room)
                 var spawn = Game.rooms[spawn_room].find(FIND_MY_SPAWNS)[0]
 
-                var r = spawn.createCreep([CLAIM, MOVE], {role: "role_claimer", home_room: 'claim_room', claiming_flag: f_name});
+                var r = spawn.createCreep([CLAIM,CLAIM, MOVE], {role: "role_claimer", home_room: 'claim_room', claiming_flag: f_name});
                 if (_.isString(r)){
                     Memory[f_name] = r;
                 }

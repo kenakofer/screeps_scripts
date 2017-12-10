@@ -1,13 +1,10 @@
-strategy option to fix upgraders in place
-find ways to reduce cpu usage
-  Diminish processing while on a job, like mining, upgrading, building?
-  Reduce number of moving creeps to cut pathfinding.
-  Reduce creeps by making larger creeps
-  Find tasks that don't need to be run every tick
-stop couriers from killing themselves!
 start mining minerals
-develop soldier/healer pairs to take rooms
-system of "calling dibs" on energy
-How about a link operator creep that stands by a storage and a link and receives requests for energy at other links, and fulfills them?
-recycle creep names?
-wide-spread controller signing!
+develop soldier/healer pairs to take rooms/harvest energy
+Remote harvesting:
+    Create reserver:
+        can use claimer role
+    Create role_foreign_solominer:
+        Might just be a solominer with one or two more work parts
+    Create role_trucker:
+        Carries massive energy load back to home room.
+        Repairs roads it's going on

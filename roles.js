@@ -16,7 +16,8 @@ role_solominer: {
             //Link is in the flag name, so prioritize the link, storage is overflow
             jobs.check_store_link(c) || jobs.check_store(c)        
         }
-        
+        if (c.memory.mining_flag.includes('remote'))
+            jobs.repair_nomove(c)
         jobs.check_solomining(c, c.memory.mining_flag)
         || jobs.check_construction(c, true) //Set the nomove parameter so they don't wander away. This is useful mainly for constructing the containers they will store in.
         //jobs.check_ondropped(c);
@@ -50,6 +51,17 @@ role_harvester: {
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do');
     },
+},
+
+role_trucker: {
+    run: function(c) {
+        jobs.check_ondropped(c);
+        jobs.repair_nomove(c);
+
+        jobs.trucker_pickup(c) ||
+        jobs.trucker_dropoff(c)
+
+    }
 },
 
 role_restocker: {

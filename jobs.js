@@ -66,6 +66,11 @@ check_solomining: function(c, flag_name){
     if ( (! Game.flags[flag_name]) || (c.carryCapacity > 0 && f.get_energy(c) == c.carryCapacity))
         return false
 
+    if (c.pos.roomName != Game.flags[flag_name].pos.roomName){
+        c.moveTo(Game.flags[flag_name])
+        return true
+    }
+
     var target = Game.flags[flag_name].pos.findInRange(FIND_SOURCES, 1)[0] //GOTCHA: It return a list, in this case a list of one...
 
     if (Game.map.getTerrainAt(Game.flags[flag_name].pos) !== 'wall' && ! c.pos.isEqualTo(Game.flags[flag_name].pos)) {
@@ -302,6 +307,68 @@ upgrade_controller: function(c) {
     return false
 },
 
+trucker_dropoff:  function(c){
+    c.job = 'trucker_dropoff'
+    if ( this.check_room(c, c.memory.drop_room) )
+        return true
+    flag = f.get([c.room.find(FIND_FLAGS, {
+        filter: (f) => f.name.includes('trucker_drop')
+    }), 0])
+    store = flag.pos.findInRange(FIND_STRUCTURES, 0, {
+        filter: (s) => [STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK].includes(s.structureType)
+    })[0]
+
+    //console.log(store)
+    //console.log(flag)
+    c.moveTo(flag)
+    r = c.transfer(store, "energy")
+},
+
+trucker_pickup:  function(c){
+    c.job = 'trucker_pickup'
+    if (_.sum(c.carry) > .5 * c.carryCapacity)
+        return false
+    //console.log(f.get([c, 'memory', 'pickup_flag']))
+    flag = Game.flags[f.get([c, 'memory', 'pickup_flag'])]
+    if (flag.pos.roomName != c.room.name){
+        c.moveTo(flag)
+        return true
+    }
+    store = flag.pos.findInRange(FIND_STRUCTURES, 1, {
+        filter: (s) => s.structureType == STRUCTURE_CONTAINER
+    })[0]
+    //console.log(store)
+    //console.log(flag)
+    if (flag.pos.roomName == c.room.name){
+         r = c.withdraw(store, "energy")
+         if (r == ERR_NOT_IN_RANGE)
+            c.moveTo(flag)
+        //console.log(r)
+    }
+
+    return true
+},
+
+repair_nomove: function(c){
+    if (c.carry.energy ==0)
+        return false
+    c.job = 'repair_nomove'
+    var damagedStuff = c.pos.findInRange(FIND_STRUCTURES, 3, {
+        filter: (s) => {
+            if (s.hits < s.hitsMax - 500) {
+                desired_hits = f.get_desired_hits(s)
+                return s.hits < desired_hits
+            }
+            return false
+        }
+    });
+    //console.log('damaged: '+damagedStuff)
+    if (! damagedStuff[0])
+        return false
+    c.repair(damagedStuff[0])
+    return true
+},
+
 claim_controller: function(c, flag_name){
 
     c.job = 'claim_controller'
@@ -345,6 +412,19 @@ claim_controller: function(c, flag_name){
         }
     }
     
+},
+
+check_room: function(c, roomName){
+    c.job = 'check_room'
+
+    if (c.room.name === roomName)
+        return false //We're already there
+    else {
+        var r = c.moveTo(new RoomPosition(25,25, roomName), {visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
+        c.say("to "+ roomName)
+        return roomName
+    }
+
 },
 
 check_home_room: function(c) {
