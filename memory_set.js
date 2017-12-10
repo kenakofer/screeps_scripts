@@ -46,11 +46,12 @@ module.exports = {
     // E.g. require('memory_set').remote_mine_room('E28S26', 'E27S26')
     remote_mine_room: function(roomName, fromRoom){
         Memory.room_strategy[roomName]={
-            'spawn_priority':['role_solominer', 'role_claimer', 'role_builder'],
+            'spawn_priority':['role_guard','role_solominer', 'role_claimer', 'role_builder'],
             'role_claimer':{'spawn_room':fromRoom},
             'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':1},
             'role_solominer':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, CARRY, WORK,WORK,WORK,WORK,WORK]},
-            'role_trucker':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]}
+            'role_trucker':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]},
+            'role_guard':    {'spawn_room':fromRoom, 'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
         }
     },
     
