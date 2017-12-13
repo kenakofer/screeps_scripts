@@ -259,7 +259,7 @@ check_spawn: function(c){
 
     c.job = 'check_spawn'
 
-    if (f.get_energy(c) == 0 || (! Memory.room_strategy[c.room.name].energy_need_filled) ){
+    if (f.get_energy(c) == 0 || (false === f.get([Memory, 'room_strategy', c.room.name, 'energy_need_filled'])) ){
         //If the creep has no energy or the spawn system is already full, we can't do it
         return false
     }

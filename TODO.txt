@@ -1,10 +1,11 @@
+Reform census/population management system:
+    Esp. The ill-advised prioritizing of supported rooms over the ones supporting them.
+    New system:
+        A room performs a census every so often, recording all the creeps that call that room their home room. The rooms may or may not have a spawn.
+        When creeps are lacking, they are put in the memory of the room to spawn them as a request to spawn.
+        When the spawn room is not this room, there is an additional tag on the request indicating so
+        Each room with a spawn then sorts the requests (address the local room needs first, in this priority order, then address the needs of each dependent room, in that room's priority order)
+
+Setup cputrack for individual roles in effort to find ways to increase efficiency
 start mining minerals
 develop soldier/healer pairs to take rooms/harvest energy
-Remote harvesting:
-    Create reserver:
-        can use claimer role
-    Create role_foreign_solominer:
-        Might just be a solominer with one or two more work parts
-    Create role_trucker:
-        Carries massive energy load back to home room.
-        Repairs roads it's going on
