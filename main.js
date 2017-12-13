@@ -40,6 +40,7 @@ module.exports.loop = function () {
     if (Game.time % 3 === 2){
         for (var roomName in Game.rooms){
             var room = Game.rooms[roomName]
+            if (! Memory.room_strategy[roomName]){ Memory.room_strategy[roomName]={} }
             Memory.room_strategy[roomName]['energy_need_filled'] = room.energyAvailable < room.energyCapacityAvailable
             Memory.room_strategy[roomName]['towers_need_filled'] = 
                 room.find(FIND_STRUCTURES, {
