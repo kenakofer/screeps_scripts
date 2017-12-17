@@ -400,9 +400,15 @@ claim_controller: function(c, flag_name){
         } 
         else
         if (r == ERR_GCL_NOT_ENOUGH) {*/
-            if( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.reserveController(controller))) {
-                c.moveTo(pos);
+            if (_.contains(flag_name, 'actually')){
+                if ( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.claimController(controller))) {
+                    c.moveTo(pos);
+                }
             }
+            else 
+                if ( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.reserveController(controller))) {
+                    c.moveTo(pos);
+                }
             return true
         /*
         }

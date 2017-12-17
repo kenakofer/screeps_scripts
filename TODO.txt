@@ -1,3 +1,7 @@
+use simpler remote mining drop model.
+    remote miners should be dropping every turn either in a container or on the ground
+    truckers should go to the pickup flag and look for energy either on the ground or in container
+use global.* for global things?
 Reform census/population management system:
     Esp. The ill-advised prioritizing of supported rooms over the ones supporting them.
     New system:

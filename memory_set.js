@@ -43,13 +43,14 @@ module.exports = {
     //When wanting to claim a new room and send workers there, call this on the new room
     // E.g. require('memory_set').bootstrap_room('E28S22', 'E27S24')
     // If the path to the room isn't straightforward, use a list of rooms in room_path to show the order.
-    // eg require('memory_set').bootstrap_room('E29S29', 'E28S22', ['E28S22', 'E29S22', 'E30S22', 'E30S23','E30S4', 'E30S25', 'E30S26', 'E30S27', 'E30S28','E30S29','E30S30','E29S30','E29S29'])
+    // eg require('memory_set').bootstrap_room('E29S29', 'E28S22', ['E28S22', 'E29S22', 'E30S22', 'E30S23','E30S24', 'E30S25', 'E30S26', 'E30S27', 'E29S27','E29S28','E28S28','E28S29',E29S29'])
+    //
     bootstrap_room: function(roomName, fromRoom, room_path){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
             'spawn_priority':['role_claimer', 'role_builder'],
             'role_claimer':{'spawn_room':fromRoom, 'parts':[MOVE,CLAIM]},
-            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':1},
+            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':2},
             'room_path':room_path,
         }
         Object.keys(updates).forEach(function(key){

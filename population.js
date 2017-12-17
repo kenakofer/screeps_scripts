@@ -120,7 +120,7 @@ check_population: function(){
                 
             var claim_room = f.get([Game, 'flags', f_name, 'pos','roomName'])
             var spawn_room = f.get([Memory.room_strategy, claim_room, 'role_claimer', 'spawn_room'])
-            var parts f.get([Memory.room_strategy, claim_room, 'role_claimer', 'parts'])
+            var parts = f.get([Memory.room_strategy, claim_room, 'role_claimer', 'parts'])
             if (! parts) parts = [CLAIM, CLAIM, MOVE]
             if (!spawn_room) {
                 console.log("Set a strategy in "+claim_room+" to know where to spawn the claimer")
