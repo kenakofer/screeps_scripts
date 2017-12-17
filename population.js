@@ -68,6 +68,7 @@ check_population: function(){
                     || f.imminent_death(Game.creeps[Memory[f_name]])
             ) {
                 //There is no creep (or soon will be no creep) mining this location, so let's create one!
+                Memory[f_name] = 'No one'
                 
                 var mine_in_room = Game.flags[f_name].pos.roomName
                 var spawn_in_room = mine_in_room
@@ -119,15 +120,16 @@ check_population: function(){
                 
             var claim_room = f.get([Game, 'flags', f_name, 'pos','roomName'])
             var spawn_room = f.get([Memory.room_strategy, claim_room, 'role_claimer', 'spawn_room'])
+            var parts f.get([Memory.room_strategy, claim_room, 'role_claimer', 'parts'])
+            if (! parts) parts = [CLAIM, CLAIM, MOVE]
             if (!spawn_room) {
                 console.log("Set a strategy in "+claim_room+" to know where to spawn the claimer")
-
             } else {
                 console.log("Wanna make a claimer for "+f_name+' in '+spawn_room)
                 var spawn = Game.rooms[spawn_room].find(FIND_MY_SPAWNS)[0]
 
                 if (spawn){
-                    var r = spawn.createCreep([CLAIM,CLAIM, MOVE], {role: "role_claimer", home_room: 'claim_room', claiming_flag: f_name});
+                    var r = spawn.createCreep(parts, {role: "role_claimer", home_room: claim_room, claiming_flag: f_name});
                     if (_.isString(r)){
                         Memory[f_name] = r;
                     }
