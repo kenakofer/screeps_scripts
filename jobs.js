@@ -393,17 +393,19 @@ claim_controller: function(c, flag_name){
 
     if (controller) {
         
-        var r = c.claimController(controller)
-        if( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], r)) {
+        //var r = c.claimController(controller)
+        /*if( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], r)) {
             c.moveTo(pos);
             return true
         } 
-        else if (r == ERR_GCL_NOT_ENOUGH) {
+        else
+        if (r == ERR_GCL_NOT_ENOUGH) {*/
             if( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.reserveController(controller))) {
                 c.moveTo(pos);
             }
             return true
-        } 
+        /*
+        }
         else if (r == OK) {
             Game.flags[flag_name].remove()
             message = 'Room '+controller.room.name+' has been claimed.'
@@ -414,7 +416,7 @@ claim_controller: function(c, flag_name){
         else {
             console.log("Could not claim controller: "+r)
             return false
-        }
+        }*/
     }
     
 },
@@ -440,11 +442,28 @@ check_home_room: function(c) {
             c.memory.home_room = c.room.name
             return false //We've decided this is home
     }
-    if (c.room.name === c.memory.home_room)
+    if (c.room.name === c.memory.home_room){
         return false //We're already there
+    }
     else {
-        var r = c.moveTo(new RoomPosition(25,25, c.memory.home_room), {visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
-        c.say("to "+ c.memory.home_room)
+        var path = f.get([Memory.room_strategy, c.memory.home_room, 'room_path'])
+        var nextRoom = undefined
+        if (! path){
+            nextRoom = c.memory.home_room
+        } else {
+            // We have a path to guide us there.
+            index = path.indexOf(c.room.name)
+            nextRoom = path[index+1]
+            console.log(c.name+' is going next to '+nextRoom)
+        }
+        var r = c.moveTo(new RoomPosition(25,25, nextRoom), {visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
+        console.log('result: '+r)
+        if (r == -2) {
+            r = c.moveTo(new RoomPosition(25,25, nextRoom), {visualizePathStyle: {stroke: '#ff0', opacity: .3}, maxOps: 10000} )
+        }
+        if (Game.time % 2 == 0) c.say("to "+ c.memory.home_room)
+        else c.say(' via '+nextRoom)
+        c.memory['nextRoom']=nextRoom
         return c.memory.home_room
     }
 },
