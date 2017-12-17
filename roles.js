@@ -28,6 +28,7 @@ role_claimer: {
     parts: [WORK, CARRY, CLAIM, MOVE, MOVE, MOVE],
 
     run: function(c) {
+        jobs.check_home_room(c) ||
         jobs.claim_controller(c, c.memory.claiming_flag) ||
         //To build up a possibly newly claimed room:
         jobs.check_mining(c) ||
