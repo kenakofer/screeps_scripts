@@ -460,10 +460,10 @@ check_home_room: function(c) {
             // We have a path to guide us there.
             index = path.indexOf(c.room.name)
             nextRoom = path[index+1]
-            console.log(c.name+' is going next to '+nextRoom)
+            //console.log(c.name+' is going next to '+nextRoom)
         }
         var r = c.moveTo(new RoomPosition(25,25, nextRoom), {visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
-        console.log('result: '+r)
+        //console.log('result: '+r)
         if (r == -2) {
             r = c.moveTo(new RoomPosition(25,25, nextRoom), {visualizePathStyle: {stroke: '#ff0', opacity: .3}, maxOps: 10000} )
         }
