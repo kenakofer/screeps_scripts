@@ -97,7 +97,8 @@ can_withdraw2: function(c, s){
         if (towers_need_filled || energy_need_filled){
             //Give blanket approval to restockers trying to restock the things
             return true
-        } else if (s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL){
+        } else if (s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL ||
+                    (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('store')))){
             //If they aren't trying to restock the things, they should be 
             //depositing in storage and terminal, not taking from it
             //console.log(c.name)
