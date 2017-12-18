@@ -108,11 +108,16 @@ check_ondropped: function(c){
     return false
 },
 
-check_dropped: function(c){
+check_dropped: function(c, needEmpty, maxOps,){
 
+    if (needEmpty && f.get_energy(c) > 0)
+        return false
     c.job = 'check_dropped'
 
-    var dropped = c.pos.findClosestByPath(FIND_DROPPED_RESOURCES)
+    var dropped = c.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {maxOps:maxOps, 
+        filter: (r) => r.resourceType == 'energy' && r.amount > c.carryCapacity
+    })
+    //console.log(JSON.stringify(dropped))
     if (! dropped)
     	return false
 
@@ -319,6 +324,10 @@ trucker_dropoff:  function(c){
     flag = f.get([c.room.find(FIND_FLAGS, {
         filter: (f) => f.name.includes('trucker_drop')
     }), 0])
+    if (! flag) {
+        console.log('No place for '+c.name+' to drop energy!')
+        return false
+    }
     store = flag.pos.findInRange(FIND_STRUCTURES, 0, {
         filter: (s) => [STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK].includes(s.structureType)
     })[0]
@@ -503,7 +512,8 @@ check_store: function(c, types, distance){
 
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (s) =>  (_.contains(types, s.structureType) &&
+            filter: (s) =>  ((_.contains(types, s.structureType) ||
+                            (s.pos.lookFor('flag')[0] && s.pos.lookFor('flag')[0].name.includes('store'))) &&
                             s.store.energy < s.storeCapacity)
         });
         if (store) {
