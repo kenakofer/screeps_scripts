@@ -47,7 +47,7 @@ check_population: function(){
                         //Emergency catch for high level rooms where the available energy has dropped too low to spawn the more expensive restocker
                         if (r == 'role_restocker' && (! role_count[r]) && spawnAt.room.energyAvailable < 450){
                             spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_restocker', home_room: roomName})
-                            Game.notify('Hey Kenan, a room ran low on energy, and spawned an emergency restocker to fix it. Just thought you\'d wanna know!', 1)
+                            Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency restocker to fix it. Just thought you\'d wanna know!', 1)
                         }
                         
                         spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
