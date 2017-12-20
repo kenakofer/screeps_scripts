@@ -8,6 +8,7 @@ module.exports.loop = function () {
 
     //Make sure basic memory locations exist
     if (! Memory.cpuTrack){ Memory.cpuTrack={} }
+    if (! Memory.cpuTrackRole){ Memory.cpuTrackRole={} }
     if (! Memory.room_strategy){ Memory.room_strategy={} }
 
     //Run each rooms main control
@@ -15,6 +16,7 @@ module.exports.loop = function () {
     //    room_control.run_room(roomName)
     //}
 
+    var cpuAll = {}
     for (var name in Game.creeps){
         var c = Game.creeps[name];
         if (! c.spawning) {
@@ -23,8 +25,13 @@ module.exports.loop = function () {
             //c.say(c.memory.role)
 
             if ( f.get([roles, c.memory.role, 'run'])) {
-                //if (c.memory.role == 'role_upgrader')
-                    roles[c.memory.role].run(c)
+                var cpu = Game.cpu.getUsed()
+                roles[c.memory.role].run(c)
+                var used = Game.cpu.getUsed()-cpu
+                if (cpuAll[c.memory.role] === undefined) cpuAll[c.memory.role] = {'number':1, 'totalCpu':used}
+                else {
+                    cpuAll[c.memory.role].number += 1; 
+                    cpuAll[c.memory.role].totalCpu += used}
             }
             else {
                 console.log(c.name+" has no recognized role with a run function: "+c.memory.role)
@@ -34,6 +41,8 @@ module.exports.loop = function () {
 
         c.memory.job = c.job
     }
+    //console.log(JSON.stringify(cpuAll))
+    f.cpuTrackRole(cpuAll)
 
     if (Game.time % 3 === 1)
     	population.check_population()

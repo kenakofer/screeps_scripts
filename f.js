@@ -48,7 +48,7 @@ replace_ticks: function(creep){
 imminent_death: function(creep){
     return creep.ticksToLive <= this.replace_ticks(creep)
 },
-
+    
 //It keeps running track of the cpu across different time intervals. It's not exactly an average, but I think it's close...
 cpuTrack: function(){
     for (i in arguments){
@@ -61,6 +61,21 @@ cpuTrack: function(){
 
     if (Memory.printCpu)
 		console.log(JSON.stringify(Memory.cpuTrack))
+},
+
+//It keeps running track of the cpu across different time intervals. It's not exactly an average, but I think it's close...
+cpuTrackRole: function(values){
+    for (role in values){
+        if (! Memory.cpuTrackRole[role]) Memory.cpuTrackRole[role]={}
+        
+        const times = [1,10,100,1000,10000]
+        times.forEach((t) => {
+            if ( [undefined, null].includes(Memory.cpuTrackRole[role][t]))
+                    Memory.cpuTrackRole[role][t] = values[role].totalCpu / values[role].number
+            else
+                    Memory.cpuTrackRole[role][t] = ( (t-1)*Memory.cpuTrackRole[role][t] + values[role].totalCpu / values[role].number) / t
+        })
+    }
 },
 
 //Check if withdraw from a container/storage s by creep c is allowed and feasible
