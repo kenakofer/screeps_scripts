@@ -76,8 +76,8 @@ role_restocker: {
 
         if ( il==0 || (Game.time%5 === 2)){
             r =
+            jobs.check_dropped(c, true, 40) ||
             jobs.check_withdraw(c) ||
-            jobs.check_dropped(c, true, 50) ||
             jobs.check_mining(c) ||
             jobs.check_spawn(c) ||
             jobs.check_towers(c) ||
@@ -125,6 +125,7 @@ role_builder: {
     run: function(c) {
         jobs.check_ondropped(c);
 
+        jobs.check_dropped(c, true, 40) ||
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers

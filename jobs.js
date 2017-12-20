@@ -27,14 +27,21 @@ check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
     			|| f.get_energy(c.room.storage) > 500000)
     		types.push(STRUCTURE_STORAGE)
                 */
+        var store = undefined
+        var filter = function(s){
+            //types.includes( s.structureType) &&
+            return f.can_withdraw2(c, s)
+            && f.get_energy(s) > needs + leaveEnergyAmount 
+            && (!  (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('sender'))))               
 
-        store = c.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (s) => 
-                        //types.includes( s.structureType) &&
-                        f.can_withdraw2(c, s)
-                	&& f.get_energy(s) > needs + leaveEnergyAmount 
-                	&& (!  (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('sender'))))               
-        });
+        }
+        if (nomove){
+            store = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: filter})[0];
+        }
+        else {
+            store = c.pos.findClosestByPath(FIND_STRUCTURES, {filter: filter});
+        }
+
         if (store) {
             //Calculate how much can be given
             energyContained = store.energy
