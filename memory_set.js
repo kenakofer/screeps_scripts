@@ -154,8 +154,25 @@ module.exports = {
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
-            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK, CARRY,CARRY] },
-            'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
+            'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK, CARRY,CARRY] }, //cost: 900
+            'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] }, //cost: 1050
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
+        };
+        Object.keys(updates).forEach(function(key){
+            Memory.room_strategy[roomName][key] = updates[key]
+        });
+    },
+
+    //For controller level 7. I'm not sure what I'm aiming for here, but perhaps one large builder can take the place of an upgrader? There's like 5300 energy available, but I shouldn't spend it all in one place
+    controller7: function(roomName){
+        if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
+        var updates = {
+            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
+            'role_restocker':{'desired_number':1, 'parts':[CARRY,CARRY,MOVE, CARRY,CARRY,MOVE, CARRY,CARRY,MOVE, CARRY,CARRY,MOVE, CARRY,CARRY,MOVE, CARRY,CARRY,MOVE, ] },
+            'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK] },
+            'role_builder':  {'desired_number':1, 'parts':[WORK,WORK,WORK,WORK,MOVE, WORK,WORK,WORK,WORK,MOVE, WORK,WORK,WORK,WORK,MOVE, WORK,WORK,WORK,WORK,MOVE, WORK,CARRY,CARRY,CARRY,MOVE, ] }, //cost: 2100
+            'role_upgrader':  {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
             'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
         };
         Object.keys(updates).forEach(function(key){
