@@ -285,6 +285,12 @@ check_spawn: function(c){
     	r = c.transfer(target, RESOURCE_ENERGY)
         if(r == ERR_NOT_IN_RANGE)
             c.moveTo(target, {visualizePathStyle: {stroke: '#ffffff', opacity: .3}});
+        if (r == OK) {
+            //If we'll have more energy after this, look for more things to fill
+            // code..
+            //If we won't have more energy, check_withdraw
+            // code..
+        }
     }
     return target
 },
@@ -358,6 +364,14 @@ trucker_pickup:  function(c){
     store = flag.pos.findInRange(FIND_STRUCTURES, 1, {
         filter: (s) => s.structureType == STRUCTURE_CONTAINER
     })[0]
+    if (! store){
+        // There is no container by the flag, so pick up energy from the ground
+        resource = flag.pos.findInRange(FIND_DROPPED_RESOURCES,1)
+        r = c.pickup(resource)
+        if (r != OK)
+            c.moveTo(flag)
+        return true
+    }
     //console.log(store)
     //console.log(flag)
     if (flag.pos.roomName == c.room.name){
@@ -537,6 +551,7 @@ check_store: function(c, types, distance){
                 return store
             }
         }
+        else return false
     }
 },
 
@@ -560,7 +575,7 @@ check_store_link: function(c){
                 return store
                 
             }
-        }
+        } else return false
     }
 },
 

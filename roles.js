@@ -7,19 +7,24 @@ role_solominer: {
 
     run: function(c) {
         //Alternate between storing in storage/containers and storing in links. Don't check every turn to save CPU
+        var r = OK
         if (! c.memory.mining_flag.includes('link')){
             if (Game.time % 4 == 0)
-                jobs.check_store(c)
+                r = jobs.check_store(c)
             else if (Game.time % 4 == 2)
-                jobs.check_store_link(c)
+                r = jobs.check_store_link(c)
         } else if (Game.time % 2 == 0) {
             //Link is in the flag name, so prioritize the link, storage is overflow
-            jobs.check_store_link(c) || jobs.check_store(c)        
+            r = jobs.check_store_link(c) || jobs.check_store(c)        
         }
         if (c.memory.mining_flag.includes('remote'))
             jobs.repair_nomove(c)
         jobs.check_solomining(c, c.memory.mining_flag)
         || jobs.check_construction(c, true) //Set the nomove parameter so they don't wander away. This is useful mainly for constructing the containers they will store in.
+        if (r === false){
+            // An attempt to store energy failed, so drop the energy on the ground instead
+            c.drop(RESOURCE_ENERGY)
+        }
         //jobs.check_ondropped(c);
     },
 },
