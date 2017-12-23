@@ -269,7 +269,7 @@ check_mining: function(c){
     return c.memory.mining
 },
 
-check_spawn: function(c){
+check_spawn: function(c, prevId){
 
     c.job = 'check_spawn'
 
@@ -280,18 +280,19 @@ check_spawn: function(c){
     var target = c.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => {
             return (s.structureType == STRUCTURE_EXTENSION ||
-            s.structureType == STRUCTURE_SPAWN) && s.energy < s.energyCapacity;
+            s.structureType == STRUCTURE_SPAWN) 
+            && s.energy < s.energyCapacity
+            && s.id != prevId
         }
     });
     if (target) {
     	r = c.transfer(target, RESOURCE_ENERGY)
         if(r == ERR_NOT_IN_RANGE)
             c.moveTo(target, {visualizePathStyle: {stroke: '#ffffff', opacity: .3}});
-        if (r == OK) {
-            //If we'll have more energy after this, look for more things to fill
-            // code..
-            //If we won't have more energy, check_withdraw
-            // code..
+        if (r == OK && prevId===undefined && f.get_energy(c)>0 ) {
+            // Now that we've filled it, make an effort to move to another
+            this.check_spawn(c, target.id)
+            
         }
     }
     return target

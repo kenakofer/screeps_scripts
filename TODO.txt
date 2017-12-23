@@ -1,4 +1,4 @@
-Restockers should restock and then move again in the same turn.
+Implement two spawns in a room
 use simpler remote mining drop model.
     remote miners should be dropping every turn either in a container or on the ground
     truckers should go to the pickup flag and look for energy either on the ground or in container
@@ -13,4 +13,4 @@ Reform census/population management system:
 
 Setup cputrack for individual roles in effort to find ways to increase efficiency
 start mining minerals
-develop soldier/healer pairs to take rooms/harvest energy
+develop soldier/healer pairs to take rooms/get power
