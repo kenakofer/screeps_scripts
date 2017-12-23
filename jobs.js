@@ -36,7 +36,9 @@ check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
 
         }
         if (nomove){
-            store = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: filter})[0];
+            stores = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: filter});
+            //Make sure they take from links first
+            store = stores.sort(function(s1,s2){return (s1.structureType!=STRUCTURE_LINK)})[0]
         }
         else {
             store = c.pos.findClosestByPath(FIND_STRUCTURES, {filter: filter});
