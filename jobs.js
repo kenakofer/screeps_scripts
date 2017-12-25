@@ -289,11 +289,12 @@ check_spawn: function(c, prevId){
     	r = c.transfer(target, RESOURCE_ENERGY)
         if(r == ERR_NOT_IN_RANGE)
             c.moveTo(target, {visualizePathStyle: {stroke: '#ffffff', opacity: .3}});
-        if (r == OK && prevId===undefined && f.get_energy(c)-target.energyCapacity*2>0 ) {
+        if (r == OK && prevId===undefined) {
             // Now that we've filled it, make an effort to move to another
-            this.check_spawn(c, target.id)
-        } else {
-            this.check_withdraw(c, true)
+            if (f.get_energy(c)-target.energyCapacity > 0)
+                this.check_spawn(c, target.id)
+            else 
+                this.check_withdraw(c, true)
         }
     }
     return target
