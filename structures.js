@@ -66,7 +66,13 @@ run_tower: function(t) {
 },
 
 run_link: function(l){
-    var shouldSend = (l.energy > l.energyCapacity / 2 && l.pos.lookFor('flag')[0].name.includes('sender') );
+    var flagSend = _.filter(
+        l.pos.lookFor('flag'),
+        function (f) { return f.name.includes('sender') }
+    )[0]
+    //console.log(flagSend)
+    var shouldSend = ( (l.energy > (l.energyCapacity / 2)) && flagSend );
+    //console.log(shouldSend)
     if (shouldSend){
         var flagReceive = l.room.find(FIND_FLAGS, {filter: (f) => f.name.includes('receiver')})[0]
         if (flagReceive){
@@ -74,7 +80,8 @@ run_link: function(l){
                 flagReceive.pos.lookFor(LOOK_STRUCTURES), 
                 function (s) {return s.structureType == 'link'}
             )[0]
-            l.transferEnergy(linkReceive)
+            r = l.transferEnergy(linkReceive)
+            //console.log(r)
         }
         
     }
