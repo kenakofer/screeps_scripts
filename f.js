@@ -135,6 +135,19 @@ get_desired_hits: function(structure){
     if (value === undefined) value = this.default_desired_hits[structure.structureType]
     if (value === undefined) value = Infinity
     return value
+},
+
+get_room_level: function(roomName){
+    var room = Game.rooms[roomName]
+    if (! room)
+        return -1
+    var controller = room.controller
+    if (! controller)
+        return -2
+    //otherwise
+    return controller.level
+    
 }
 
 };
+

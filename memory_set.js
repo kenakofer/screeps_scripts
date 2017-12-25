@@ -1,3 +1,4 @@
+f = require('f')
 //Gives some standard settings for different controller levels and situations
 //
 // Example:
@@ -203,6 +204,19 @@ module.exports = {
             Memory.room_strategy[roomName][structure_type]['desired_hits'] += amount
         return Memory.room_strategy[roomName][structure_type].desired_hits
 
+    },
+    
+    // Increases the fortification level of all rooms with controllers at 3 or higher. Good for
+    // no fuss increases in defenses across the board
+    increase_all_fortifications: function(amount){
+        amount = amount || 2000
+        for (roomName in Game.rooms){
+            room = Game.rooms[roomName]
+            if (room.controller && room.controller.my && f.get_room_level(roomName) >= 3){
+                this.increase_desired_hits(roomName, STRUCTURE_WALL, amount)
+                this.increase_desired_hits(roomName, STRUCTURE_RAMPART, amount)
+            }
+        }
     },
 }
 
