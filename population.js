@@ -23,12 +23,16 @@ census: function(justCount, home_room){
         return role_count;
 },
 
-check_population: function(){
+check_population: function(rooms_with_spawn){
     for (roomName in Memory.room_strategy) {
         var room = Game.rooms[roomName]
         var spawn = undefined
         if (room)
             spawn = Game.rooms[roomName].find(FIND_MY_SPAWNS)[0]
+        if ( (!spawn) && rooms_with_spawn)
+            continue;
+        if ( spawn && (!rooms_with_spawn))
+            continue;
         var role_count = this.census(false, roomName)
         //Replace base classes as they die
         var spawn_order = f.get([Memory, 'room_strategy', roomName, 'spawn_priority'])
@@ -57,7 +61,8 @@ check_population: function(){
             }
         }
     }
-
+},
+check_flag_creeps: function(){
     //Create creeps in 1-1 correspondance with special flags
     //TODO make this different method? flag associated creeps vs. counted creeps?
     for (var f_name in Game.flags){
@@ -146,6 +151,6 @@ check_population: function(){
             }
         }
     }
-}
+},
 
 };

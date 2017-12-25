@@ -44,8 +44,11 @@ module.exports.loop = function () {
     //console.log(JSON.stringify(cpuAll))
     f.cpuTrackRole(cpuAll)
 
-    if (Game.time % 3 === 1)
-    	population.check_population()
+    if (Game.time % 3 === 1){
+        population.check_population(true)
+        population.check_population(false)
+        population.check_flag_creeps()
+    }
     if (Game.time % 3 === 2){
         for (var roomName in Game.rooms){
             var room = Game.rooms[roomName]

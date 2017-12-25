@@ -63,9 +63,9 @@ module.exports = {
     remote_mine_room: function(roomName, fromRoom){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority':['role_guard','role_solominer', 'role_claimer', 'role_builder'],
+            'spawn_priority':['role_guard','role_solominer', 'role_claimer', 'role_builder', 'role_trucker'],
             'role_claimer':{'spawn_room':fromRoom},
-            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':1},
+            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':0},
             'role_solominer':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, CARRY, WORK,WORK,WORK,WORK,WORK]},
             'role_trucker':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]},
             'role_guard':    {'spawn_room':fromRoom, 'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
@@ -81,7 +81,7 @@ module.exports = {
     controller3: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':2, 'parts':[MOVE, CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,ATTACK,ATTACK,TOUGH,TOUGH] },
@@ -99,7 +99,7 @@ module.exports = {
     controller3_minimal: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE, CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,ATTACK,ATTACK,TOUGH,TOUGH] },
@@ -116,7 +116,7 @@ module.exports = {
     controller4: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':2, 'parts':[MOVE,MOVE, CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
@@ -133,7 +133,7 @@ module.exports = {
     controller5: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
@@ -150,7 +150,7 @@ module.exports = {
     controller6: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
             'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
