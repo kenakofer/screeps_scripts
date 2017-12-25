@@ -125,7 +125,7 @@ check_population: function(){
             if (!spawn_room) {
                 console.log("Set a strategy in "+claim_room+" to know where to spawn the claimer")
             } else {
-                console.log("Wanna make a claimer for "+f_name+' in '+spawn_room)
+                //console.log("Wanna make a claimer for "+f_name+' in '+spawn_room)
                 var spawn = Game.rooms[spawn_room].find(FIND_MY_SPAWNS)[0]
 
                 if (spawn){

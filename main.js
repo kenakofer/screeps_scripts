@@ -65,7 +65,7 @@ module.exports.loop = function () {
     var towers = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_TOWER); 
     for (i = 0; i < towers.length; i++) { structures.run_tower(towers[ i ]); }
     
-    if (! (Game.time % 9)) {
+    if (! (Game.time % 5)) {
     	var links = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_LINK);
    		for (i = 0; i < links.length; i++) { structures.run_link(links[ i ]); }
    	}
