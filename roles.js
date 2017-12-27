@@ -105,7 +105,7 @@ role_guard: {
     run: function(c) {
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
-        jobs.check_barracks(c) ||
+        jobs.goto_flag(c, 'barracks') ||
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do') 
     },

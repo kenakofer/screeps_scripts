@@ -233,11 +233,11 @@ check_invaders: function(c){
     }
 },
 
-check_barracks: function(c){
+goto_flag: function(c, flagName){
 
-    c.job = 'check_barracks'
+    c.job = 'goto_flag: '+flagName
 
-    var flag = c.room.find(FIND_FLAGS, {filter: (f) => f.name.includes('barrack')})[0]
+    var flag = c.room.find(FIND_FLAGS, {filter: (f) => f.name.includes(flagName)})[0]
     if (flag){
         c.moveTo(flag.pos)
     }
@@ -320,6 +320,8 @@ check_towers: function(c){
 upgrade_controller: function(c) {
 
     c.job = 'upgrade_controller'
+    //If there's a flag, we should be trying to move toward it
+    this.goto_flag(c, 'upgrade')
 
     var r = c.upgradeController(c.room.controller)
     
