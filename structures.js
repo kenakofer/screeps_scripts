@@ -89,7 +89,7 @@ run_link: function(l){
 
 check_terminals: function(){
 	surplus_terminals = []
-	var most_deficit_room
+	var most_deficit_room = undefined
 	var most_deficit_amount = 333333 //One third capacity of storage
 	for (roomName in Game.rooms){
 		room = Game.rooms[roomName]
@@ -97,7 +97,7 @@ check_terminals: function(){
 		storage = room.storage
 		if (terminal && storage){
 			total = f.get_energy(storage) + f.get_energy(terminal)
-			if (total > storage.storeCapacity / 2 && f.get_energy(terminal) > 200){
+			if (total > storage.storeCapacity / 2 && f.get_energy(terminal) > 20000){
 				//Energy surplus here, so take from the storage to the terminal
 				surplus_terminals.push(terminal)
 			}

@@ -542,7 +542,8 @@ check_store: function(c, types, distance){
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (s) =>  ((_.contains(types, s.structureType) ||
                             (s.pos.lookFor('flag')[0] && s.pos.lookFor('flag')[0].name.includes('store'))) &&
-                            s.store.energy < s.storeCapacity)
+                            s.store.energy < s.storeCapacity &&
+                            f.can_store(c, s))
         });
         if (store) {
             //console.log(store)

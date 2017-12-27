@@ -124,6 +124,18 @@ can_withdraw2: function(c, s){
     return true
 },
 
+can_store: function(c, s) {
+    if (c.memory.role == 'role_restocker'){
+        if (s.structureType == STRUCTURE_STORAGE)
+            return (s.store.energy < 666000)
+        if (s.structureType == STRUCTURE_TERMINAL)
+            return (s.store.energy < 150000 && ((!s.room.storage) || s.room.storage.store.energy > 500000))
+    } else {
+        //Solominers, truckers, etc: they know what they're doing
+        return true
+    }
+},
+
 default_desired_hits: {
     [STRUCTURE_WALL]: 1000,
     [STRUCTURE_RAMPART]: 1000,
