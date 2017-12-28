@@ -47,14 +47,13 @@ check_population: function(rooms_with_spawn){
                     }
                     if (spawnAt) {
                         
-                        //console.log("wanna spawn a "+r+" in room "+spawnAt.room.name+" for "+roomName)
-                        //Emergency catch for high level rooms where the available energy has dropped too low to spawn the more expensive restocker
-                        if (r == 'role_restocker' && (! role_count[r]) && spawnAt.room.energyAvailable < 450){
+                        result = spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
+                        console.log(r)
+                        if (result === ERR_NOT_ENOUGH_ENERGY && r=='role_restocker'){
+                            //Emergency catch for high level rooms where the available energy has dropped too low to spawn the more expensive restocker
                             spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_restocker', home_room: roomName})
                             Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency restocker to fix it. Just thought you\'d wanna know!', 1)
                         }
-                        
-                        spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
                         break;
                     }
                 }
