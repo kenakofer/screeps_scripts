@@ -60,6 +60,15 @@ role_harvester: {
     },
 },
 
+role_mineral_miner: {
+    run: function(c) {
+        jobs.check_mineral_mining(c) || 
+        jobs.check_store_minerals(c)
+        jobs.check_gathering_place(c) ||
+        (c.job = 'Nothing to do');
+    },
+},
+
 role_trucker: {
     run: function(c) {
         jobs.check_ondropped(c);

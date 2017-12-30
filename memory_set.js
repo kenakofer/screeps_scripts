@@ -23,7 +23,7 @@ module.exports = {
         });
     },
 
-    //Once you have lvl2, 5 extensions, and container(s) by the source(s)
+    //Once you have lvl2, 5 extensions
     //When switching to this, make sure you place a 'solomine*' flag to create the solominer(s)!
     controller2_solomining: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
@@ -218,5 +218,14 @@ module.exports = {
             }
         }
     },
+
+
+    start_mineral_mining(roomName){
+        if (_.contains(Memory.room_strategy[roomName].role_mineral_miner))
+            return false
+        if ( ! _.contains(Memory.room_strategy[roomName].spawn_priority, 'role_mineral_miner'))
+            Memory.room_strategy[roomName].spawn_priority.push('role_mineral_miner')
+        Memory.room_strategy[roomName].role_mineral_miner = {'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':1}
+    }
 }
 

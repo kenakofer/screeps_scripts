@@ -269,6 +269,27 @@ check_mining: function(c){
     return c.memory.mining
 },
 
+check_mineral_mining: function(c){
+
+    c.job = 'check_mineral_mining'
+
+    if ( (! c.memory.mining) && _.sum(c.carry) == 0) {
+        var mine = c.pos.findClosestByPath(FIND_MINERALS)
+        if (mine) {
+            c.memory.mining = mine.id
+        }
+    } else if (c.memory.mining && _.sum(c.carry) == c.carryCapacity) {
+        c.memory.mining = false
+    }
+    if (c.memory.mining){
+        var target = Game.getObjectById(c.memory.mining);
+        if (c.harvest(target) == ERR_NOT_IN_RANGE){
+            c.moveTo(target, {visualizePathStyle: {stroke: '#ff0', opacity: .3}})
+        }
+    }
+    return c.memory.mining
+},
+
 check_spawn: function(c, prevId){
 
     c.job = 'check_spawn'
@@ -532,7 +553,7 @@ check_construction: function(c, nomove){
 },
 
 check_store: function(c, types, distance){
-    types = types || [STRUCTURE_STORAGE, STRUCTURE_CONTAINER]
+    types = types || [STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_TERMINAL]
     distance = distance || 5
 
     c.job = 'check_store'
@@ -560,6 +581,26 @@ check_store: function(c, types, distance){
             }
         }
         else return false
+    }
+},
+
+check_store_minerals: function(c){
+    var desired_amounts = {
+        RESOURCE_HYDROGEN: 10000,
+        RESOURCE_OXYGEN: 10000,
+        RESOURCE_UTRIUM: 10000,
+        RESOURCE_LEMERGIUM: 10000,
+        RESOURCE_KEANIUM: 10000,
+        RESOURCE_ZYNTHIUM: 10000,
+        RESOURCE_CATALYST: 10000,
+        RESOURCE_GHODIUM: 10000,
+    }
+    for (rtype in c.carry){
+        r=c.transfer(c.room.terminal, rtype)
+        if (r === ERR_NOT_IN_RANGE){
+            c.moveTo(c.room.terminal)
+            return true
+        }
     }
 },
 
