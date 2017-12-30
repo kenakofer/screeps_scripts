@@ -45,10 +45,11 @@ module.exports.loop = function () {
     f.cpuTrackRole(cpuAll)
 
     if (Game.time % 3 === 1){
-        population.check_population(true)
         population.check_population(false)
+        population.check_population(true)
         population.check_flag_creeps()
     }
+    // Update various room status
     if (Game.time % 3 === 2){
         for (var roomName in Game.rooms){
             var room = Game.rooms[roomName]
@@ -58,6 +59,8 @@ module.exports.loop = function () {
                 room.find(FIND_STRUCTURES, {
                     filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
                 })[0]
+            Memory.room_strategy[roomName]['storage_low'] = 
+                (Game.rooms[roomName].storage && Game.rooms[roomName].storage.store.energy < 500000)
         }
     }
     
