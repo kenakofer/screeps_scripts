@@ -60,7 +60,9 @@ module.exports.loop = function () {
                     filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
                 })[0]
             Memory.room_strategy[roomName]['storage_low'] = 
-                (Game.rooms[roomName].storage && Game.rooms[roomName].storage.store.energy < 500000)
+                (Game.rooms[roomName].storage && Game.rooms[roomName].storage.store.energy < 100000)
+            Memory.room_strategy[roomName]['terminal_low'] = 
+                (Game.rooms[roomName].terminal && Game.rooms[roomName].terminal.store.energy < 10000)
         }
     }
     
@@ -74,10 +76,14 @@ module.exports.loop = function () {
     if (! (Game.time % 5)) {
     	var links = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_LINK);
    		for (i = 0; i < links.length; i++) { structures.run_link(links[ i ]); }
-   	}
+    }
 
     if (! (Game.time % 30)) {
     	structures.check_terminals()
+    }
+
+    if ((Game.time % 10) == 1){
+        structures.check_lab_reactions()
     }
 
     f.cpuTrack(1,10,100,1000,10000)

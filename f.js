@@ -131,7 +131,7 @@ can_store: function(c, s) {
         if (s.structureType == STRUCTURE_STORAGE)
             return (s.store.energy < 666000)
         if (s.structureType == STRUCTURE_TERMINAL)
-            return (s.store.energy < 150000 && ((!s.room.storage) || s.room.storage.store.energy > 500000))
+            return (s.store.energy < 150000 && (! Memory.room_strategy[c.room.name].storage_low))
     } else {
         //Solominers, truckers, etc: they know what they're doing
         return true

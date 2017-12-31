@@ -133,4 +133,73 @@ check_terminals: function(){
 	}
 },
 
+check_terminal_minerals: function() {
+    mineral_needs = {
+        'E28S22': {
+            [RESOURCE_OXYGEN]: 5000,
+            [RESOURCE_KEANIUM]: 5000,
+            [RESOURCE_LEMERGIUMG]: 5000,
+            [RESOURCE_KEANIUM]: 5000,
+        },
+    }
+    for (needyRoom in mineral_needs){
+        for (resource in mineral_needs[needyRoom]){
+            // If the room already has enough of that resource, move on
+            needs = mineral_needs[needyRoom][resource]
+            already_there = Game.rooms[needyRoom].terminal.store[resource]
+            if (already_there > needs)
+                continue
+
+            // Otherwise, look for a room to provide it
+            additional_need = needs - already_there
+            for (roomName in Game.rooms){
+                // Discount the room itself
+                if (roomName == needyRoom)
+                    continue
+                // Discount rooms without terminals
+                givingTerminal = Game.rooms[roomName].terminal
+                if (! givingTerminal)
+                    continue
+                // Discount rooms with (effectively) no resources
+                resourceAmount = givingTerminal.store[resource]
+                energyAmount = givingTerminal.store.energy
+                if ((resourceAmount < 1000) || (energyAmount < 100))
+                    continue
+                // So the terminal has some of the resource. See how much of it can send
+                amount = _.min([resourceAmount, additional_need])
+                cost_to_send_all = Game.market.calcTransactionCost(amount, roomName, needyRoom)
+                amount_can_send = Math.floor(amount * _.min([1, (energyAmount-5) / cost_to_send_all]))
+
+                // And try to send it!
+                r = givingTerminal.send(resource, amount_can_send, needyRoom)
+                if (r == OK)
+                    break
+                else
+                    console.log('Failed to send '+amount_can_send+' resource from '+roomName+' to '+needyRoom)
+            }
+        }
+    }
+},
+
+check_lab_reactions: function(){
+    var reactions = {
+        [RESOURCE_HYDROXIDE]: [RESOURCE_HYDROGEN, RESOURCE_OXYGEN],
+        [RESOURCE_KEANIUM_HYDRIDE]: [RESOURCE_KEANIUM, RESOURCE_HYDROGEN],
+    }
+    for (flagName in Game.flags){
+        if (! flagName.includes('_make'))
+            continue
+
+        var flag = Game.flags[flagName]
+        var lab = flag.pos.lookFor(LOOK_STRUCTURES, {filter: {structureType: STRUCTURE_LAB}})[0]
+        product = flagName.substring(0,flag.name.indexOf('_'))
+        ingredients = reactions[product]
+        // Find the labs with the ingredients
+        lab1 = flag.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LAB, mineralType: ingredients[0]}})[0]
+        lab2 = flag.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LAB, mineralType: ingredients[1]}})[0]
+        r = lab.runReaction(lab1, lab2)
+        return (r === OK)
+    }
+}
+
 };

@@ -62,8 +62,9 @@ role_harvester: {
 
 role_mineral_miner: {
     run: function(c) {
+        jobs.check_labs(c) ||
         jobs.check_mineral_mining(c) || 
-        jobs.check_store_minerals(c)
+        jobs.check_store_minerals(c) ||
         jobs.check_gathering_place(c) ||
         (c.job = 'Nothing to do');
     },
@@ -91,6 +92,7 @@ role_restocker: {
         if ( il==0 || (Game.time%5 === 2)){
             r =
             jobs.check_dropped(c, true, 40) ||
+            jobs.check_store_minerals(c) ||
             jobs.check_withdraw(c) ||
             jobs.check_mining(c) ||
             jobs.check_spawn(c) ||

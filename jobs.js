@@ -273,10 +273,13 @@ check_mineral_mining: function(c){
 
     c.job = 'check_mineral_mining'
 
-    if ( (! c.memory.mining) && _.sum(c.carry) == 0) {
-        var mine = c.pos.findClosestByPath(FIND_MINERALS)
-        if (mine) {
-            c.memory.mining = mine.id
+    if (! c.memory.mining) {
+        if (_.sum(c.carry) > 0)
+            return false
+        else {
+            var mine = c.pos.findClosestByPath(FIND_MINERALS)
+            if (mine) 
+                c.memory.mining = mine.id
         }
     } else if (c.memory.mining && _.sum(c.carry) == c.carryCapacity) {
         c.memory.mining = false
@@ -586,21 +589,27 @@ check_store: function(c, types, distance){
 
 check_store_minerals: function(c){
     var desired_amounts = {
-        RESOURCE_HYDROGEN: 10000,
-        RESOURCE_OXYGEN: 10000,
-        RESOURCE_UTRIUM: 10000,
-        RESOURCE_LEMERGIUM: 10000,
-        RESOURCE_KEANIUM: 10000,
-        RESOURCE_ZYNTHIUM: 10000,
-        RESOURCE_CATALYST: 10000,
-        RESOURCE_GHODIUM: 10000,
+        [RESOURCE_HYDROGEN]: 10000,
+        [RESOURCE_OXYGEN]: 10000,
+        [RESOURCE_UTRIUM]: 10000,
+        [RESOURCE_LEMERGIUM]: 10000,
+        [RESOURCE_KEANIUM]: 10000,
+        [RESOURCE_ZYNTHIUM]: 10000,
+        [RESOURCE_CATALYST]: 10000,
+        [RESOURCE_GHODIUM]: 10000,
     }
+    if (! c.room.terminal)
+        return false
     for (rtype in c.carry){
+        if (rtype == RESOURCE_ENERGY)
+            continue
         r=c.transfer(c.room.terminal, rtype)
         if (r === ERR_NOT_IN_RANGE){
             c.moveTo(c.room.terminal)
             return true
         }
+        if (r===OK)
+            return true
     }
 },
 
@@ -626,6 +635,96 @@ check_store_link: function(c){
             }
         } else return false
     }
+},
+
+check_labs: function(c){
+    // Don't interrupt a mining job
+    if (c.memory.mining)
+        return false
+
+    c.job = 'check_labs'
+
+    labs = c.room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_LAB}})
+    target_lab = undefined
+    for (i in labs){
+        lab = labs[i]
+        //If there isn't an input flag, skip over the lab
+        flag = lab.pos.lookFor(LOOK_FLAGS)[0]
+        if (!flag)
+            continue
+        if (flag.name.includes('_in')){
+            //Get the resource associated with the flag
+            resource = flag.name.substring(0,flag.name.indexOf('_'))
+            // If the lab doesn't have the wrong mineral in it
+            if (_.contains(['null',resource], lab.mineralType)) {
+                // If there is already plenty (2/3 capacity) skip over this lab
+                if (lab.mineralAmount > 2000)
+                    continue
+                if ( c.carry[resource] > 0 ){
+                    // So the creep has the resource. Go put it in
+                    r = c.transfer(lab, resource)
+                    if (r === ERR_NOT_IN_RANGE){
+                        c.moveTo(lab)
+                        return true
+                    }
+                    return (r === OK)
+                } else if (c.room.terminal.store[resource]>0 && _.sum(c.carry)===0){
+                    // It doesn't the have the resource, the creep!
+                    // Go get some from the terminal if it can
+                    r = c.withdraw(c.room.terminal, resource)
+                    if (r === ERR_NOT_IN_RANGE){
+                        c.moveTo(c.room.terminal)
+                        return true
+                    }
+                }
+            } else {
+                console.log('wrong mineral type')
+                // The lab has the wrong mineral in it, and it should be removed
+                r = c.withdraw(lab, lab.mineralType)
+                if (r === ERR_NOT_IN_RANGE){
+                    c.moveTo(lab)
+                    return true
+                }
+
+            }
+        } else if (flag.name.includes('_boost')){
+            // This lab won't need minerals, but it'll need energy!!!
+            if (lab.energy > 1200)
+                continue
+            // Creep need energy first
+            if (_.sum(c.carry)===0){
+                return this.check_withdraw(c)
+            } else if (c.carry.energy > 0){
+                // Get the energy to the lab
+                r = c.transfer(lab, RESOURCE_ENERGY)
+                console.log(r)
+                if (r === ERR_NOT_IN_RANGE){
+                    c.moveTo(lab)
+                    return true
+                }
+                return (r === OK)
+            }
+        } else if (flag.name.includes('_make')){
+            //Get the resource associated with the flag
+            resource = flag.name.substring(0,flag.name.indexOf('_'))
+            // If the creep is carrying something already, move on
+            if (_.sum(c.carry)>0)
+                continue
+            // If the lab has the right mineral in it, move on
+            if (_.contains(['null',resource], lab.mineralType))
+                continue
+            console.log('wrong mineral type')
+            // The lab has the wrong mineral in it, and it should be removed
+            r = c.withdraw(lab, lab.mineralType)
+            if (r === ERR_NOT_IN_RANGE){
+                c.moveTo(lab)
+                return true
+            }
+        }
+    }
+    //Nothing useful to do with the labs. Maybe try mining?
+    return false
+
 },
 
 check_gathering_place: function(c){
