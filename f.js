@@ -123,6 +123,8 @@ can_withdraw2: function(c, s){
         }
     }
     //Everything else?
+    if (s.structureType == STRUCTURE_TERMINAL)
+        return (! Memory.room_strategy[c.pos.roomName].terminal_low)
     return true
 },
 

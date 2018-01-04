@@ -1,4 +1,9 @@
 In light of recent attack, find best qualifier for a serious room threat, and activate safe mode automatically.
+    A good qualifier would probably be if the guard in the room is killed
+        Can tell by:
+            putting guards in memory each tick, along with the time to live
+            if a guard in memory is not in Game.creeps, and the time to live was greater than, like, 2, then this is a serious threat
+        Then if the guard's room is in Game.rooms, try to activate a safe mode, and email me with the result
     Then, find ways to spawn more guards as soon as enemy appears (just bump up desired number?)
     Have towers make wise decisions about firing on an enemy (wait till close?)
 Implement two spawns in a room, should also help with when invaders show up

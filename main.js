@@ -80,6 +80,7 @@ module.exports.loop = function () {
 
     if (! (Game.time % 30)) {
     	structures.check_terminals()
+        structures.check_terminal_minerals()
     }
 
     if ((Game.time % 10) == 1){

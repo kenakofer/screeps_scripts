@@ -138,7 +138,7 @@ check_terminal_minerals: function() {
         'E28S22': {
             [RESOURCE_OXYGEN]: 5000,
             [RESOURCE_KEANIUM]: 5000,
-            [RESOURCE_LEMERGIUMG]: 5000,
+            [RESOURCE_LEMERGIUM]: 5000,
             [RESOURCE_KEANIUM]: 5000,
         },
     }
