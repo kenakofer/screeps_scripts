@@ -147,6 +147,8 @@ check_terminal_minerals: function() {
             // If the room already has enough of that resource, move on
             needs = mineral_needs[needyRoom][resource]
             already_there = Game.rooms[needyRoom].terminal.store[resource]
+
+            // If the rooms already has enough of that resource, move on
             if (already_there > needs)
                 continue
 

@@ -656,7 +656,7 @@ check_labs: function(c){
             //Get the resource associated with the flag
             resource = flag.name.substring(0,flag.name.indexOf('_'))
             // If the lab doesn't have the wrong mineral in it
-            if (_.contains(['null',resource], lab.mineralType)) {
+            if (_.contains([null,resource], lab.mineralType)) {
                 // If there is already plenty (2/3 capacity) skip over this lab
                 if (lab.mineralAmount > 2000)
                     continue
@@ -671,6 +671,7 @@ check_labs: function(c){
                 } else if (c.room.terminal.store[resource]>0 && _.sum(c.carry)===0){
                     // It doesn't the have the resource, the creep!
                     // Go get some from the terminal if it can
+                    console.log('here')
                     r = c.withdraw(c.room.terminal, resource)
                     if (r === ERR_NOT_IN_RANGE){
                         c.moveTo(c.room.terminal)
@@ -678,7 +679,7 @@ check_labs: function(c){
                     }
                 }
             } else {
-                console.log('wrong mineral type')
+                console.log('wrong mineral type in lab: '+lab.mineralType)
                 // The lab has the wrong mineral in it, and it should be removed
                 r = c.withdraw(lab, lab.mineralType)
                 if (r === ERR_NOT_IN_RANGE){
