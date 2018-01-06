@@ -698,7 +698,7 @@ check_labs: function(c){
             } else if (c.carry.energy > 0){
                 // Get the energy to the lab
                 r = c.transfer(lab, RESOURCE_ENERGY)
-                console.log(r)
+                //console.log(r)
                 if (r === ERR_NOT_IN_RANGE){
                     c.moveTo(lab)
                     return true
@@ -739,6 +739,44 @@ check_gathering_place: function(c){
         c.moveTo(flag)
         return true
     }
-}
+},
+
+check_boosts: function(c){
+    boosts = {
+        role_restocker: ['KH', 'ZO'],
+        role_mineral_miner: ['KH', 'ZO'],
+    }
+    for (i in boosts[c.memory.role]){
+        resource = boosts[c.memory.role][i]
+        var flag =  f.get([c.room.find(FIND_FLAGS, {filter: (f) => f.name.includes('_boost') && f.name.includes(resource+'_')}), 0])
+        // There is no flag indicating that resource
+        if (! flag)
+            continue
+        var lab = flag.pos.lookFor(LOOK_STRUCTURES)[0]
+        console.log(lab)
+        if (lab.mineralType != resource){
+            console.log('The lab doesn\'t have the boost resource: '+resource)
+            continue
+        }
+        if (lab.energy < LAB_BOOST_ENERGY || lab.mineralAmount < LAB_BOOST_MINERAL){
+            console.log('The lab doesn\'t have enough energy or minerals to boost with')
+            continue
+        }
+        // Ok, now try the boost and check the result
+        // TODO this is also the result if the creep is already boosted, but far away
+        r = lab.boostCreep(c)
+        if (r === ERR_NOT_IN_RANGE){
+            c.moveTo(lab)
+            return true
+        }
+        // This means the creep is already boosted
+        if (r === ERR_NOT_FOUND){
+            return false
+        }
+        //console.log(r)
+        return true
+    }
+    return false
+},
 
 };
