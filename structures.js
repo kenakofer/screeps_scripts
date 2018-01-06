@@ -43,16 +43,7 @@ run_tower: function(t) {
         //Repair broken structures
         var roomName = t.room.name
         var closestDamaged = t.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (s) => {
-                    if (s.hits < s.hitsMax - 500) {
-                            //desired_hits = f.get([Memory, 'room_strategy', roomName, s.structureType, 'desired_hits'])
-                            //if (! desired_hits)
-                            //        desired_hits = 10000
-                            desired_hits = f.get_desired_hits(s)
-                            return s.hits < desired_hits
-                    }
-                    return false
-            }
+            filter: (s) => s.hits < f.get_desired_hits(s)
         });
         if (closestDamaged) {
             Memory[t.id].inactive_level=0
@@ -146,6 +137,10 @@ check_terminal_minerals: function() {
         for (resource in mineral_needs[needyRoom]){
             // If the room already has enough of that resource, move on
             needs = mineral_needs[needyRoom][resource]
+
+            if (! Game.rooms[needyRoom].terminal)
+                continue
+
             already_there = Game.rooms[needyRoom].terminal.store[resource]
 
             // If the rooms already has enough of that resource, move on
@@ -194,6 +189,10 @@ check_lab_reactions: function(){
 
         var flag = Game.flags[flagName]
         var lab = flag.pos.lookFor(LOOK_STRUCTURES, {filter: {structureType: STRUCTURE_LAB}})[0]
+
+        // Lab is not there
+        if (! lab)
+            continue
         product = flagName.substring(0,flag.name.indexOf('_'))
         ingredients = reactions[product]
         // Find the labs with the ingredients
