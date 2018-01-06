@@ -63,6 +63,42 @@ module.exports.loop = function () {
                 (Game.rooms[roomName].storage && Game.rooms[roomName].storage.store.energy < 100000)
             Memory.room_strategy[roomName]['terminal_low'] = 
                 (Game.rooms[roomName].terminal && Game.rooms[roomName].terminal.store.energy < 10000)
+
+            // Check for if an emergency safe mode is needed
+            // First establish the presence of a non safemode controller with hostiles in the room
+            controller = f.get([Game.rooms, roomName, 'controller'])
+            if (controller && controller.my && (controller.safeMode === undefined) && (controller.room.find(FIND_HOSTILE_CREEPS)[0])){
+                // See if we don't have a cache of structures
+                if (! f.get([Memory.room_strategy, roomName, 'hostile_struct_check'])){
+                    // Get all the relevant structure ids in the room
+                    struct_types = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_LINK, STRUCTURE_STORAGE, STRUCTURE_TOWER, STRUCTURE_OBSERVER, STRUCTURE_EXTRACTOR, STRUCTURE_LAB, STRUCTURE_TERMINAL, STRUCTURE_NUKER]
+                    structs = c.room.find(FIND_MY_STRUCTURES, {filter: (s) => _.contains(struct_types, s.structureType)})
+                    ids = structs.map(s => s.id)
+                    // Write the ids to memory
+                    Memory.room_strategy[roomName].hostile_struct_check = ids
+                    console.log(Memory.room_strategy[roomName].hostile_struct_check)
+                    console.log(ids.length)
+                } else {
+                    // Run through cache and make sure the structures still exist at full hits
+                    structs = Memory.room_strategy[roomName].hostile_struct_check
+                    for (i in structs) {
+                        obj = Game.getObjectById(structs[i])
+                        if ( !obj ){
+                            r = controller.activateSafeMode()
+                            console.log('START SAFE MODE cause of object id: '+structs[i]+' with result '+r)
+                            Game.notify('Hey Kenan, '+roomName+' started a safe mode with result'+r+'  Better check it out!', 1)
+                           break
+                        }
+                    }
+                    console.log('Already cached!')
+                }
+            } else {
+                // No safe mode needed at this time, so clear the cache
+                if (Memory.room_strategy[roomName].hostile_struct_check) {
+                    console.log('clearing the cache')
+                    Memory.room_strategy[roomName].hostile_struct_check = undefined
+                }
+            }
         }
     }
     
