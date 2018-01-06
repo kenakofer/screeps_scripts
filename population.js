@@ -48,7 +48,7 @@ check_population: function(rooms_with_spawn){
                     if (spawnAt) {
                         
                         result = spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
-                        console.log(r)
+                        //console.log(r)
                         if (result === ERR_NOT_ENOUGH_ENERGY && r=='role_restocker'){
                             //Emergency catch for high level rooms where the available energy has dropped too low to spawn the more expensive restocker
                             spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_restocker', home_room: roomName})
@@ -109,10 +109,12 @@ check_flag_creeps: function(){
                 }
                 if (Game.rooms[spawn_in_room]){
                     var spawn = Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS)[0];
-                    parts = Memory.room_strategy[mine_in_room]['role_trucker'].parts
-                    var r = spawn.createCreep(parts, {role: "role_trucker", home_room: mine_in_room, drop_room: spawn_in_room, pickup_flag: f_name});
-                    if (_.isString(r))
-                        Memory[f_name] = r
+                    if (spawn){
+                        parts = Memory.room_strategy[mine_in_room]['role_trucker'].parts
+                        var r = spawn.createCreep(parts, {role: "role_trucker", home_room: mine_in_room, drop_room: spawn_in_room, pickup_flag: f_name});
+                        if (_.isString(r))
+                            Memory[f_name] = r
+                    }
                 } else {
                     console.log('Gotta set a spawn room for this trucker: '+f_name)
                 }   
