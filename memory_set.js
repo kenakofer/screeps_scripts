@@ -8,7 +8,7 @@ module.exports = {
     
     //This is a good method to call for the first ever room, to get everything up and running
     // e.g. require('memory_set').controller1_basic('E27S26')
-    controller1_basic: function(roomName){
+    controller1: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
             'spawn_priority': ['role_harvester', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
@@ -25,7 +25,7 @@ module.exports = {
 
     //Once you have lvl2, 5 extensions
     //When switching to this, make sure you place a 'solomine*' flag to create the solominer(s)!
-    controller2_solomining: function(roomName){
+    controller2: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
             'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
@@ -52,6 +52,19 @@ module.exports = {
             'spawn_priority':['role_claimer', 'role_builder'],
             'role_claimer':{'spawn_room':fromRoom, 'parts':[MOVE,CLAIM]},
             'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':2},
+            'room_path':room_path,
+        }
+        Object.keys(updates).forEach(function(key){
+            Memory.room_strategy[roomName][key] = updates[key]
+        });
+    },
+
+
+    rebuild_spawn: function(roomName, fromRoom, room_path){
+        if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
+        var updates = {
+            'spawn_priority':['role_builder'],
+            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY], 'desired_number':1},
             'room_path':room_path,
         }
         Object.keys(updates).forEach(function(key){
