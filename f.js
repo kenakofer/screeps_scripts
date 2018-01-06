@@ -112,9 +112,9 @@ can_withdraw2: function(c, s){
         if (towers_need_filled || energy_need_filled){
             //Give blanket approval to restockers trying to restock the things
             return true
-        } else if (s.structureType == STRUCTURE_TERMINAL && Memory.room_strategy[c.room.name].storage_low){
-            return true 
-        } else if (s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL ||
+        } else if (s.structureType == STRUCTURE_TERMINAL){
+            return (Memory.room_strategy[c.room.name].storage_low || (! Memory.room_strategy[c.room.name].terminal_low)) 
+        } else if (s.structureType == STRUCTURE_STORAGE ||
                     (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('store')))){
             //If they aren't trying to restock the things, they should be 
             //depositing in storage and terminal, not taking from it
@@ -133,7 +133,7 @@ can_store: function(c, s) {
         if (s.structureType == STRUCTURE_STORAGE)
             return (s.store.energy < 666000)
         if (s.structureType == STRUCTURE_TERMINAL)
-            return (s.store.energy < 150000 && (! Memory.room_strategy[c.room.name].storage_low))
+            return (Memory.room_strategy[c.room.name].terminal_low && (! Memory.room_strategy[c.room.name].storage_low))
     } else {
         //Solominers, truckers, etc: they know what they're doing
         return true
@@ -149,7 +149,7 @@ default_desired_hits: {
 get_desired_hits: function(structure){
     var value = this.get([Memory, 'room_strategy', structure.pos.roomName, structure.structureType, 'desired_hits'])
     if (value === undefined) value = this.default_desired_hits[structure.structureType]
-    if (value === undefined) value = Infinity
+    if (value === undefined) value = structure.maxHits
     return value
 },
 
