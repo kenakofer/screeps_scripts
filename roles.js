@@ -97,7 +97,6 @@ role_restocker: {
             jobs.check_mining(c) ||
             jobs.check_spawn(c) ||
             jobs.check_towers(c) ||
-            //jobs.check_terminal(c) ||
             jobs.check_dropped(c) ||
             jobs.check_home_room(c) ||
             jobs.check_store(c, [STRUCTURE_STORAGE, STRUCTURE_TERMINAL], 20) ||

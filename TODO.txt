@@ -1,9 +1,16 @@
 In light of recent attack, find best qualifier for a serious room threat, and activate safe mode automatically.
     A good qualifier would probably be if the guard in the room is killed
-        Can tell by:
-            putting guards in memory each tick, along with the time to live
-            if a guard in memory is not in Game.creeps, and the time to live was greater than, like, 2, then this is a serious threat
-        Then if the guard's room is in Game.rooms, try to activate a safe mode, and email me with the result
+        Nope, a recent attack of mostly work part creeps shows that sometimes they just demolish stuff and ignore creeps
+    A better qualifier is if:
+        There are hostiles in the room
+        AND a fixed hit point structure is weakened or destroyed (spawn, extensions, towers, links, storage, terminal, labs)
+        This should rule out the periodic hostiles that are automatically generated and easily killed, while still being easy to calculate
+    Implementation:
+        
+        For each room, check if safe mode is off and there are hostiles:
+            If there are, and a cache of object IDs of the permanent structures has not been taken, put all the object ids in the room_strategy
+            If the cache exists, check each of the ids. If the id is missing from Game objects or the object is below full hits, activate safe mode
+
     Then, find ways to spawn more guards as soon as enemy appears (just bump up desired number?)
     Have towers make wise decisions about firing on an enemy (wait till close?)
 Implement two spawns in a room, should also help with when invaders show up

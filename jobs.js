@@ -248,6 +248,9 @@ check_mining: function(c){
 
     c.job = 'check_mining'
 
+    if (! _.contains(c.parts, WORK))
+        return false
+
     if ( (! c.memory.mining) && f.get_energy(c) == 0) {
         var mine = c.pos.findClosestByPath(FIND_SOURCES, {filter: (s) =>
         	//If there is a flag on the source position whose name is in memory, with the value of a currently living creep
@@ -256,6 +259,10 @@ check_mining: function(c){
         })
         if (mine) {
             c.memory.mining = mine.id
+        }
+        else {
+            // There is no place to mine, return false
+            return false
         }
     } else if (c.memory.mining && f.get_energy(c) == c.carryCapacity) {
         c.memory.mining = false
