@@ -66,7 +66,7 @@ module.exports.loop = function () {
 
             // Check for if an emergency safe mode is needed
             // First establish the presence of a non safemode controller with hostiles in the room
-            controller = f.get([Game.rooms, roomName, 'controller'])
+            var controller = f.get([Game.rooms, roomName, 'controller'])
             if (controller && controller.my && (controller.safeMode === undefined) && (controller.room.find(FIND_HOSTILE_CREEPS)[0])){
                 // See if we don't have a cache of structures
                 if (! f.get([Memory.room_strategy, roomName, 'hostile_struct_check'])){

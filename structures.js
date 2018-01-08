@@ -79,7 +79,7 @@ run_link: function(l){
 },
 
 check_terminals: function(){
-	surplus_terminals = []
+	var surplus_terminals = []
 	var most_deficit_room = undefined
 	var most_deficit_amount = 333333 //One third capacity of storage
 	for (roomName in Game.rooms){

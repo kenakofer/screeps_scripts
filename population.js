@@ -5,7 +5,7 @@ var roles = require('roles')
 module.exports = {
 
 census: function(justCount, home_room){
-    role_count={};
+    var role_count={};
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if (creep.memory.home_room == home_room && ! f.imminent_death(creep)){
@@ -24,7 +24,7 @@ census: function(justCount, home_room){
 },
 
 check_population: function(rooms_with_spawn){
-    for (roomName in Memory.room_strategy) {
+    for (var roomName in Memory.room_strategy) {
         var room = Game.rooms[roomName]
         var spawn = undefined
         if (room)
