@@ -126,7 +126,6 @@ check_dropped: function(c, needEmpty, maxOps,){
     var dropped = c.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {maxOps:maxOps, 
         filter: (r) => r.resourceType == 'energy' && r.amount > c.carryCapacity
     })
-    //console.log(JSON.stringify(dropped))
     if (! dropped)
     	return false
 

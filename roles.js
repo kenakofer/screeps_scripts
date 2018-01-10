@@ -121,7 +121,7 @@ role_upgrader: {
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
-        jobs.check_dropped(c, true, 50) ||
+        jobs.check_dropped(c, true, 200) ||
         jobs.check_mining(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
@@ -133,11 +133,11 @@ role_builder: {
     run: function(c) {
         jobs.check_ondropped(c);
 
-        jobs.check_dropped(c, true, 40) ||
+        jobs.check_dropped(c, true, 50) ||
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
-        jobs.check_dropped(c, true, 50) ||
+        jobs.check_dropped(c, true, 200) ||
         jobs.check_mining(c) ||
         jobs.check_construction(c) ||
         //check_spawn(c) ||
