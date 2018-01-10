@@ -223,7 +223,7 @@ check_invaders: function(c){
 
     var target = c.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
     if (target){
-        r = c.attack(target) 
+        var r = c.attack(target) 
         if (r == ERR_NOT_IN_RANGE) {
             c.moveTo(target, {visualizePathStyle: {stroke: '#f00', opacity: .6}});
             return target
@@ -248,8 +248,9 @@ check_mining: function(c){
 
     c.job = 'check_mining'
 
-    if (! _.contains(c.parts, WORK))
+    if (c.getActiveBodyparts(WORK) === 0){
         return false
+    }
 
     if ( (! c.memory.mining) && f.get_energy(c) == 0) {
         var mine = c.pos.findClosestByPath(FIND_SOURCES, {filter: (s) =>

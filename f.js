@@ -65,7 +65,7 @@ cpuTrack: function(){
 
 //It keeps running track of the cpu across different time intervals. It's not exactly an average, but I think it's close...
 cpuTrackRole: function(values){
-    for (role in values){
+    for (var role in values){
         if (! Memory.cpuTrackRole[role]) Memory.cpuTrackRole[role]={}
         
         const times = [1,10,100,1000,10000]
@@ -80,14 +80,14 @@ cpuTrackRole: function(values){
 
 //Check if withdraw from a container/storage s by creep c is allowed and feasible
 can_withdraw: function(c, s){
-    rule = 'withdraw_spawn_empty'
+    var rule = 'withdraw_spawn_empty'
     if (s.room.energyAvailable === s.room.energyCapacityAvailable) rule = 'withdraw_spawn_full'
     
     //console.log(rule)
     //console.log(this.get([Memory, s.id, rule]))
     //console.log(c.memory.role)
 
-    rule_followed = 
+    var rule_followed = 
         _.contains([1,undefined], this.get([Memory, s.id, rule])) || 
         _.contains(this.get([Memory, s.id, rule]), c.memory.role)
     return rule_followed
@@ -146,6 +146,7 @@ default_desired_hits: {
     [STRUCTURE_CONTAINER]: 50000
     //Structures not named here default to full value
 },
+
 get_desired_hits: function(structure){
     var value = this.get([Memory, 'room_strategy', structure.pos.roomName, structure.structureType, 'desired_hits'])
     if (value === undefined) value = this.default_desired_hits[structure.structureType]

@@ -1,4 +1,4 @@
-f = require('f')
+var f = require('f')
 //Gives some standard settings for different controller levels and situations
 //
 // Example:
@@ -15,8 +15,9 @@ module.exports = {
             'role_harvester': {'desired_number':1, 'parts':[MOVE,WORK,CARRY] },
             'role_guard': {'desired_number':1, 'parts':[MOVE,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':1, 'parts':[MOVE,WORK,CARRY] },
-            'role_builder': {'desired_number':3, 'parts':[MOVE,WORK,CARRY] },
-            'role_solominer': {'parts':[WORK,WORK,WORK,WORK,WORK,MOVE]} //Don't make this until you're shifting to the next
+            'role_builder': {'desired_number':5, 'parts':[MOVE,WORK,CARRY] },
+            'role_solominer': {'parts':[WORK,WORK,WORK,WORK,WORK,MOVE]}, //Don't make this until you're shifting to the next
+            'name': 'controller1',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -34,7 +35,8 @@ module.exports = {
             'role_guard': {'desired_number':1, 'parts':[MOVE,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':1, 'parts':[MOVE,WORK,CARRY] },
             'role_builder': {'desired_number':3, 'parts':[MOVE, MOVE, WORK,WORK, CARRY,CARRY] },
-            'role_solominer': {'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]} //You need 5 extensions before you can make this one
+            'role_solominer': {'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]}, //You need 5 extensions before you can make this one
+            'name': 'controller2',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -53,6 +55,7 @@ module.exports = {
             'role_claimer':{'spawn_room':fromRoom, 'parts':[MOVE,CLAIM]},
             'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':2},
             'room_path':room_path,
+            'name': 'bootstrap_room',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -66,6 +69,7 @@ module.exports = {
             'spawn_priority':['role_builder'],
             'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY], 'desired_number':1},
             'room_path':room_path,
+            'name': 'rebuild_spawn',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -83,6 +87,7 @@ module.exports = {
             'role_solominer':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, CARRY, WORK,WORK,WORK,WORK,WORK]},
             'role_trucker':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]},
             'role_guard':    {'spawn_room':fromRoom, 'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
+            'name': 'remote_mine_room',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -101,7 +106,8 @@ module.exports = {
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,ATTACK,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
             'role_builder':  {'desired_number':3, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY] },
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]}
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]},
+            'name': 'controller3',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -119,7 +125,8 @@ module.exports = {
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,ATTACK,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
             'role_builder':  {'desired_number':2, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]}
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]},
+            'name': 'controller3_minimal',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -136,7 +143,8 @@ module.exports = {
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
             'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
             'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]}
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]},
+            'name': 'controller4',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -153,7 +161,8 @@ module.exports = {
             'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
             'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
             'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]},
+            'name': 'controller5',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -170,7 +179,8 @@ module.exports = {
             'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
             'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK, CARRY,CARRY] }, //cost: 900
             'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] }, //cost: 1050
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]},
+            'name': 'controller6',
         };
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -187,7 +197,8 @@ module.exports = {
             'role_guard':    {'desired_number':1, 'parts':[TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH, MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK] },
             'role_builder':  {'desired_number':1, 'parts':[WORK,WORK,WORK,WORK,MOVE, WORK,WORK,WORK,WORK,MOVE, WORK,WORK,WORK,WORK,MOVE, WORK,WORK,WORK,WORK,MOVE, WORK,CARRY,CARRY,CARRY,MOVE, ] }, //cost: 2100
             'role_upgrader':  {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]}
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE, CARRY]},
+            'name': 'controller7',
         };
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -239,6 +250,52 @@ module.exports = {
         if ( ! _.contains(Memory.room_strategy[roomName].spawn_priority, 'role_mineral_miner'))
             Memory.room_strategy[roomName].spawn_priority.push('role_mineral_miner')
         Memory.room_strategy[roomName].role_mineral_miner = {'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':1}
+    },
+
+    automatic_room_strategy_rules(roomName){
+        var room = Game.rooms[roomName]
+        // If the room isn't my controller, don't touch
+        if ((! room) || (! room.controller) || (! room.controller.my))
+            return false
+        // If the room doesn't have a spawn of its own, don't touch
+        if (! room.find(FIND_MY_SPAWNS)[0])
+            return false
+
+        // Choose a level based on eca
+        var eca = room.energyCapacityAvailable
+        if (eca < 550){
+            if (Memory.room_strategy[roomName] === undefined){
+                // Set a baseline for new, not bootstrapped rooms
+                console.log('Automatically setting '+roomName+' to controller1')
+                return this.controller1(roomName)
+            } else{
+                // For young rooms which already have a strategy, don't touch
+                return false
+            }
+        //Controller2: For 550 < eca < 800 
+        } else if (eca < 800){
+            if (Memory.room_strategy[roomName].name != 'controller2'){
+                console.log('Automatically setting '+roomName+' to controller2')
+                return this.controller2(roomName)
+            }
+        //Controller3: For 800 < eca < 1300
+        } else if (eca < 1300){
+            if (Memory.room_strategy[roomName].name != 'controller3'){
+                console.log('Automatically setting '+roomName+' to controller3')
+                return this.controller3(roomName)
+            }
+        //Controller4: For 1300 < eca < 1800
+        } else if (eca < 1800){
+            if (Memory.room_strategy[roomName].name != 'controller3'){
+                console.log('Automatically setting '+roomName+' to controller3')
+                return this.controller3(roomName)
+            }
+        } else {
+            console.log('uncaught')
+            return false
+        }
+
+
     }
 }
 

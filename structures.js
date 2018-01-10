@@ -82,12 +82,12 @@ check_terminals: function(){
 	var surplus_terminals = []
 	var most_deficit_room = undefined
 	var most_deficit_amount = 333333 //One third capacity of storage
-	for (roomName in Game.rooms){
-		room = Game.rooms[roomName]
-		terminal = room.terminal; 
-		storage = room.storage
+	for (var roomName in Game.rooms){
+		var room = Game.rooms[roomName]
+		var terminal = room.terminal; 
+		var storage = room.storage
 		if (terminal && storage){
-			total = f.get_energy(storage) + f.get_energy(terminal)
+			var total = f.get_energy(storage) + f.get_energy(terminal)
 			if (total > storage.storeCapacity / 2 && f.get_energy(terminal) > 20000){
 				//Energy surplus here, so take from the storage to the terminal
 				surplus_terminals.push(terminal)
@@ -101,10 +101,10 @@ check_terminals: function(){
 	if (! most_deficit_room)
 		return false
 	//Now we have a list of sending terminals and a room to send to. Let's do it!
-	for (i in surplus_terminals){
+	for (var i in surplus_terminals){
 
-		t = surplus_terminals[i]
-		e = f.get_energy(t)
+		var t = surplus_terminals[i]
+		var e = f.get_energy(t)
 		amount = (e*e) / (e + Game.market.calcTransactionCost(e, t.room.name, most_deficit_room))
 		amount = _.floor(amount)
 		can_accept = TERMINAL_CAPACITY - _.sum(Game.rooms[most_deficit_room].terminal.store)
@@ -125,50 +125,51 @@ check_terminals: function(){
 },
 
 check_terminal_minerals: function() {
-    mineral_needs = {
-        'E28S22': {
+    var mineral_needs = {
+    /*    'E28S22': {
             [RESOURCE_OXYGEN]: 5000,
             [RESOURCE_KEANIUM]: 5000,
             [RESOURCE_LEMERGIUM]: 5000,
             [RESOURCE_KEANIUM]: 5000,
         },
+        */
     }
-    for (needyRoom in mineral_needs){
-        for (resource in mineral_needs[needyRoom]){
+    for (var needyRoom in mineral_needs){
+        for (var resource in mineral_needs[needyRoom]){
             // If the room already has enough of that resource, move on
-            needs = mineral_needs[needyRoom][resource]
+            var needs = mineral_needs[needyRoom][resource]
 
             if (! Game.rooms[needyRoom].terminal)
                 continue
 
-            already_there = Game.rooms[needyRoom].terminal.store[resource]
+            var already_there = Game.rooms[needyRoom].terminal.store[resource]
 
             // If the rooms already has enough of that resource, move on
             if (already_there > needs)
                 continue
 
             // Otherwise, look for a room to provide it
-            additional_need = needs - already_there
-            for (roomName in Game.rooms){
+            var additional_need = needs - already_there
+            for (var roomName in Game.rooms){
                 // Discount the room itself
                 if (roomName == needyRoom)
                     continue
                 // Discount rooms without terminals
-                givingTerminal = Game.rooms[roomName].terminal
+                var givingTerminal = Game.rooms[roomName].terminal
                 if (! givingTerminal)
                     continue
                 // Discount rooms with (effectively) no resources
-                resourceAmount = givingTerminal.store[resource]
-                energyAmount = givingTerminal.store.energy
+                var resourceAmount = givingTerminal.store[resource]
+                var energyAmount = givingTerminal.store.energy
                 if ((resourceAmount < 1000) || (energyAmount < 100))
                     continue
                 // So the terminal has some of the resource. See how much of it can send
-                amount = _.min([resourceAmount, additional_need])
-                cost_to_send_all = Game.market.calcTransactionCost(amount, roomName, needyRoom)
-                amount_can_send = Math.floor(amount * _.min([1, (energyAmount-5) / cost_to_send_all]))
+                var amount = _.min([resourceAmount, additional_need])
+                var cost_to_send_all = Game.market.calcTransactionCost(amount, roomName, needyRoom)
+                var amount_can_send = Math.floor(amount * _.min([1, (energyAmount-5) / cost_to_send_all]))
 
                 // And try to send it!
-                r = givingTerminal.send(resource, amount_can_send, needyRoom)
+                var r = givingTerminal.send(resource, amount_can_send, needyRoom)
                 if (r == OK)
                     break
                 else
@@ -183,7 +184,7 @@ check_lab_reactions: function(){
         [RESOURCE_HYDROXIDE]: [RESOURCE_HYDROGEN, RESOURCE_OXYGEN],
         [RESOURCE_KEANIUM_HYDRIDE]: [RESOURCE_KEANIUM, RESOURCE_HYDROGEN],
     }
-    for (flagName in Game.flags){
+    for (var flagName in Game.flags){
         if (! flagName.includes('_make'))
             continue
 
@@ -193,12 +194,12 @@ check_lab_reactions: function(){
         // Lab is not there
         if (! lab)
             continue
-        product = flagName.substring(0,flag.name.indexOf('_'))
-        ingredients = reactions[product]
+        var product = flagName.substring(0,flag.name.indexOf('_'))
+        var ingredients = reactions[product]
         // Find the labs with the ingredients
-        lab1 = flag.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LAB, mineralType: ingredients[0]}})[0]
-        lab2 = flag.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LAB, mineralType: ingredients[1]}})[0]
-        r = lab.runReaction(lab1, lab2)
+        var lab1 = flag.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LAB, mineralType: ingredients[0]}})[0]
+        var lab2 = flag.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LAB, mineralType: ingredients[1]}})[0]
+        var r = lab.runReaction(lab1, lab2)
         return (r === OK)
     }
 }

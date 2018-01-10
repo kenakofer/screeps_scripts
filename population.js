@@ -38,8 +38,8 @@ check_population: function(rooms_with_spawn){
         var spawn_order = f.get([Memory, 'room_strategy', roomName, 'spawn_priority'])
         if (spawn_order) {
             for (var i in spawn_order) {
-                r = Memory.room_strategy[roomName].spawn_priority[i]
-                number = f.get([Memory, 'room_strategy', roomName, r, 'desired_number'])
+                var r = Memory.room_strategy[roomName].spawn_priority[i]
+                var number = f.get([Memory, 'room_strategy', roomName, r, 'desired_number'])
                 if ( number && ((! role_count[r]) || role_count[r].length < number)) {
                     var spawnAt = spawn
                     if ( f.get([Memory, 'room_strategy', roomName, r, 'spawn_room'])) {
@@ -47,7 +47,7 @@ check_population: function(rooms_with_spawn){
                     }
                     if (spawnAt) {
                         
-                        result = spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
+                        var result = spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
                         //console.log(r)
                         if (result === ERR_NOT_ENOUGH_ENERGY && r=='role_restocker'){
                             //Emergency catch for high level rooms where the available energy has dropped too low to spawn the more expensive restocker
@@ -121,7 +121,7 @@ check_flag_creeps: function(){
             }
         }
         //Create creep to claim a controller
-        if (f_name.includes('claim') && ( !('role_claimer' in role_count)) && (! f.get([Game, 'creeps', [Memory, f_name]]))){
+        if (f_name.includes('claim') && (! f.get([Game, 'creeps', [Memory, f_name]]))){
             //There is no creep claiming this location, so let's create one!
                 
             var claim_room = f.get([Game, 'flags', f_name, 'pos','roomName'])

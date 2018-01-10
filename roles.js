@@ -6,15 +6,9 @@ module.exports = {
 role_solominer: {
 
     run: function(c) {
-        //Alternate between storing in storage/containers and storing in links. Don't check every turn to save CPU
         var r = OK
-        if (! c.memory.mining_flag.includes('link')){
-            if (Game.time % 4 == 0)
-                r = jobs.check_store(c)
-            else if (Game.time % 4 == 2)
-                r = jobs.check_store_link(c)
-        } else if (Game.time % 2 == 0) {
-            //Link is in the flag name, so prioritize the link, storage is overflow
+        if (Game.time % 2 == 0) {
+            //prioritize the link, other storage is overflow
             r = jobs.check_store_link(c) || jobs.check_store(c)        
         }
         if (c.memory.mining_flag.includes('remote'))
@@ -48,7 +42,6 @@ role_harvester: {
     run: function(c) {
         jobs.check_ondropped(c);
 
-        jobs.check_invaders(c) || 
         jobs.check_dropped(c, true, 50) ||
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||

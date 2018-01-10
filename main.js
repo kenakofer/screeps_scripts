@@ -2,6 +2,8 @@ var roles = require('roles')
 var f = require('f')
 var population = require('population')
 var structures = require('structures')
+var construction = require('construction')
+var memory_set = require('memory_set')
 //var room_control = require('room_control')
 
 module.exports.loop = function () {
@@ -71,20 +73,21 @@ module.exports.loop = function () {
                 // See if we don't have a cache of structures
                 if (! f.get([Memory.room_strategy, roomName, 'hostile_struct_check'])){
                     // Get all the relevant structure ids in the room
-                    struct_types = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_LINK, STRUCTURE_STORAGE, STRUCTURE_TOWER, STRUCTURE_OBSERVER, STRUCTURE_EXTRACTOR, STRUCTURE_LAB, STRUCTURE_TERMINAL, STRUCTURE_NUKER]
-                    structs = c.room.find(FIND_MY_STRUCTURES, {filter: (s) => _.contains(struct_types, s.structureType)})
-                    ids = structs.map(s => s.id)
+                    var room = Game.rooms[roomName]
+                    var struct_types = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_LINK, STRUCTURE_STORAGE, STRUCTURE_TOWER, STRUCTURE_OBSERVER, STRUCTURE_EXTRACTOR, STRUCTURE_LAB, STRUCTURE_TERMINAL, STRUCTURE_NUKER]
+                    var structs = room.find(FIND_MY_STRUCTURES, {filter: (s) => _.contains(struct_types, s.structureType)})
+                    var ids = structs.map(s => s.id)
                     // Write the ids to memory
                     Memory.room_strategy[roomName].hostile_struct_check = ids
                     console.log(Memory.room_strategy[roomName].hostile_struct_check)
                     console.log(ids.length)
                 } else {
                     // Run through cache and make sure the structures still exist at full hits
-                    structs = Memory.room_strategy[roomName].hostile_struct_check
+                    var structs = Memory.room_strategy[roomName].hostile_struct_check
                     for (i in structs) {
-                        obj = Game.getObjectById(structs[i])
+                        var obj = Game.getObjectById(structs[i])
                         if ( !obj ){
-                            r = controller.activateSafeMode()
+                            var r = controller.activateSafeMode()
                             console.log('START SAFE MODE cause of object id: '+structs[i]+' with result '+r)
                             Game.notify('Hey Kenan, '+roomName+' started a safe mode with result'+r+'  Better check it out!', 1)
                            break
@@ -107,7 +110,7 @@ module.exports.loop = function () {
     //TODO put this in structures.js?
     //Not a significant portion of cpu
     var towers = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_TOWER); 
-    for (i = 0; i < towers.length; i++) { structures.run_tower(towers[ i ]); }
+    for (var i = 0; i < towers.length; i++) { structures.run_tower(towers[ i ]); }
     
     if (! (Game.time % 5)) {
     	var links = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_LINK);
@@ -115,12 +118,21 @@ module.exports.loop = function () {
     }
 
     if (! (Game.time % 30)) {
-    	structures.check_terminals()
+    	//structures.check_terminals()
         structures.check_terminal_minerals()
+        for (var roomName in Game.rooms){
+            memory_set.automatic_room_strategy_rules(roomName)
+        }
     }
 
     if ((Game.time % 10) == 1){
         structures.check_lab_reactions()
+    }
+
+    if ((Game.time % 2) == 0){
+        for (var roomName in Game.rooms){
+            construction.check_construction_sites(roomName)
+        }
     }
 
     f.cpuTrack(1,10,100,1000,10000)
