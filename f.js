@@ -105,6 +105,11 @@ can_withdraw2: function(c, s){
         return false
     }
 
+    // No withdrawing if there's a sender flag
+    if (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('sender'))){
+        return false
+    }
+
     // Restockers
     if (c.memory.role == 'role_restocker') {
         var towers_need_filled = Memory.room_strategy[c.room.name].towers_need_filled
@@ -125,6 +130,12 @@ can_withdraw2: function(c, s){
     //Everything else?
     if (s.structureType == STRUCTURE_TERMINAL)
         return (! Memory.room_strategy[c.pos.roomName].terminal_low)
+    if (s.structureType == STRUCTURE_STORAGE ||
+        (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('stor')))){
+        //Leave some for restocking spawn
+        return s.store.energy > 500
+    }
+    //Default to yes
     return true
 },
 

@@ -2,38 +2,20 @@ var f = require('f')
 
 module.exports = {
 //TODO refactor this anyway?
-check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
+check_withdraw: function(c, noCheckEmpty, nomove){
     
     c.job = 'check_withdraw'
     if (c.picked_up) return false
 
-    if (! leaveEnergyAmount)
-        leaveEnergyAmount=0
-        
     var needs = c.carryCapacity - _.sum(c.carry)
     if (needs == 0)
         return false
         
     if (noCheckEmpty || f.get_energy(c) == 0) {
 
-    	//Check these structures, and only check terminals if the room has below half a storage full
-    	//types = [STRUCTURE_CONTAINER, STRUCTURE_LINK]
-    	//if (! (f.get_energy(c.room.storage) > 500000))
-    	//	types.push(STRUCTURE_TERMINAL)
-    	//Only allow restockers to take from storage if we are above half storage or if we don't have much energy in the terminal
-        //TODO this should go into the can_withdraw function
-    	/*if (c.memory.role !== 'role_restocker'
-    			|| f.get_energy(c.room.terminal) < 1000
-    			|| f.get_energy(c.room.storage) > 500000)
-    		types.push(STRUCTURE_STORAGE)
-                */
         var store = undefined
         var filter = function(s){
-            //types.includes( s.structureType) &&
             return f.can_withdraw2(c, s)
-            && f.get_energy(s) > needs + leaveEnergyAmount 
-            && (!  (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('sender'))))               
-
         }
         if (nomove){
             stores = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: filter});
@@ -45,22 +27,9 @@ check_withdraw: function(c, noCheckEmpty, nomove, leaveEnergyAmount){
         }
 
         if (store) {
-            //Calculate how much can be given
-            energyContained = store.energy
-            if (! energyContained){
-                energyContained = store.store.energy
-            }
-            if (! energyContained){
-                console.log('whoops')
-            }
-
-            amount = _.min([energyContained - leaveEnergyAmount, needs])
-            
             //Try to do the withdrawl
-            r = c.withdraw(store, "energy", amount)
+            r = c.withdraw(store, "energy")
             if (r == ERR_NOT_IN_RANGE){
-                if (nomove)
-                    return false
                 c.moveTo(store)
                 return store
             }
@@ -452,47 +421,28 @@ claim_controller: function(c, flag_name){
 
     var pos = flag.pos
 
+    c.moveTo(flag)
     if (c.room.name !== flag.pos.roomName){
-        c.moveTo(flag)
         return true
     }
     
-    var controller = pos.lookFor(LOOK_STRUCTURES)[0]
+    var controller = Game.rooms[flag.pos.roomName].controller
+    //c.claimController(controller)
 
     if (controller) {
-        
-        //var r = c.claimController(controller)
-        /*if( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], r)) {
-            c.moveTo(pos);
-            return true
-        } 
-        else
-        if (r == ERR_GCL_NOT_ENOUGH) {*/
-            if (_.contains(flag_name, 'actually')){
-                if ( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.claimController(controller))) {
-                    c.moveTo(pos);
-                }
+        if (_.contains(flag_name, 'actually')){
+            if ( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.claimController(controller))) {
+                c.moveTo(pos);
             }
-            else 
-                if ( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.reserveController(controller))) {
-                    c.moveTo(pos);
-                }
-            return true
-        /*
         }
-        else if (r == OK) {
-            Game.flags[flag_name].remove()
-            message = 'Room '+controller.room.name+' has been claimed.'
-            console.log(message)
-            Game.notify(message)
-            return false //Because we might still be able to do something else
-        } 
-        else {
-            console.log("Could not claim controller: "+r)
-            return false
-        }*/
+        else 
+            if ( _.contains([ERR_NOT_IN_RANGE, ERR_INVALID_TARGET], c.reserveController(controller))) {
+                c.moveTo(pos);
+            }
+        if (controller.my)
+            flag.remove()
+        return true
     }
-    
 },
 
 check_room: function(c, roomName){

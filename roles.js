@@ -120,7 +120,7 @@ role_upgrader: {
 
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
-        jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
+        jobs.check_withdraw(c, false, false) ||
         jobs.check_dropped(c, true, 200) ||
         jobs.check_mining(c) ||
         jobs.upgrade_controller(c) ||
@@ -131,11 +131,16 @@ role_upgrader: {
 
 role_builder: {
     run: function(c) {
+        // Don't pick up anything if it's in the wrong room, that will only slow
+        // it down
+        if (jobs.check_home_room(c))
+            return
+
         jobs.check_ondropped(c);
 
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
-        jobs.check_withdraw(c, false, false, 300) || //Leave energy for the restockers
+        jobs.check_withdraw(c, false, false) || 
         jobs.check_dropped(c, true, 200) ||
         jobs.check_mining(c) ||
         jobs.check_construction(c) ||
