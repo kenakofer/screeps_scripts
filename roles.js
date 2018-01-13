@@ -15,7 +15,7 @@ role_solominer: {
             jobs.repair_nomove(c)
         jobs.check_solomining(c, c.memory.mining_flag)
         || jobs.check_construction(c, true) //Set the nomove parameter so they don't wander away. This is useful mainly for constructing the containers they will store in.
-        if (r === false){
+        if (! r){
             // An attempt to store energy failed, so drop the energy on the ground instead
             c.drop(RESOURCE_ENERGY)
         }

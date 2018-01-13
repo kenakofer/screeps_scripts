@@ -124,7 +124,7 @@ module.exports = {
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
             'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
             'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]},
+            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, CARRY, MOVE]},
             'name': 'controller4',
         }
         Object.keys(updates).forEach(function(key){

@@ -627,6 +627,7 @@ check_store_minerals: function(c){
 check_store_link: function(c){
 
     c.job = 'check_store_link'
+    var store = undefined
 
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
