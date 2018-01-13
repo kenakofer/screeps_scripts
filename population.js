@@ -88,7 +88,7 @@ check_flag_creeps: function(){
                         var r = spawn.createCreep(parts, {role: "role_solominer", home_room: mine_in_room, mining_flag: f_name});
                         if (_.isString(r))
                             Memory[f_name] = r
-                    } else {
+                    } else if (f_name.includes('remote')){
                         console.log('You need to create a room_stategy to tell where to spawn the solominer for '+mine_in_room)
                     }
                 }
