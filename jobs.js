@@ -29,6 +29,8 @@ check_withdraw: function(c, noCheckEmpty, nomove){
         if (store) {
             //Try to do the withdrawl
             r = c.withdraw(store, "energy")
+            console.log(store)
+            console.log(r)
             if (r == ERR_NOT_IN_RANGE){
                 c.moveTo(store)
                 return store

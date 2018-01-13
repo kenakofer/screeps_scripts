@@ -96,6 +96,12 @@ can_withdraw: function(c, s){
 //Check if withdraw from a container/storage s by creep c is allowed and feasible
 //TODO this function is WAY too heavy on the cpu
 can_withdraw2: function(c, s){
+
+    const types = [STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_TERMINAL, STRUCTURE_LINK]
+    if (! _.contains(types, s.structureType))
+        return false
+    if (this.get_energy(s) < c.carryCapacity)
+        return false
    
     //First check for an explicitly set allow or disallow
     if (this.get([Memory, s.id, 'can_withdraw']) && this.get([Memory, s.id, 'can_withdraw']).contains(c.memory.role)){

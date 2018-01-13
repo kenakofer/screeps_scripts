@@ -85,8 +85,9 @@ role_restocker: {
         if ( il==0 || (Game.time%5 === 2)){
             r =
             jobs.check_store_minerals(c) ||
-            jobs.check_dropped(c, true, 40) ||
             jobs.check_withdraw(c) ||
+
+            jobs.check_dropped(c, true, 40) ||
             jobs.check_mining(c) ||
             jobs.check_spawn(c) ||
             jobs.check_towers(c) ||
