@@ -572,7 +572,7 @@ check_store: function(c, types, distance){
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (s) =>  ((_.contains(types, s.structureType) ||
-                            (s.pos.lookFor('flag')[0] && s.pos.lookFor('flag')[0].name.includes('store'))) &&
+                            (s.pos.lookFor('flag')[0] && s.pos.lookFor('flag')[0].name.includes('stor'))) &&
                             s.store.energy < s.storeCapacity &&
                             f.can_store(c, s))
         });
@@ -605,14 +605,17 @@ check_store_minerals: function(c){
         [RESOURCE_CATALYST]: 10000,
         [RESOURCE_GHODIUM]: 10000,
     }
-    if (! c.room.terminal)
+    var dest_struct = c.room.terminal
+    if (! dest_struct)
+        dest_struct = c.room.storage
+    if (! dest_struct)
         return false
     for (rtype in c.carry){
         if (rtype == RESOURCE_ENERGY)
             continue
-        r=c.transfer(c.room.terminal, rtype)
+        r=c.transfer(dest_struct, rtype)
         if (r === ERR_NOT_IN_RANGE){
-            c.moveTo(c.room.terminal)
+            c.moveTo(dest_struct)
             return true
         }
         if (r===OK)

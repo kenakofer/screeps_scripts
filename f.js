@@ -115,7 +115,7 @@ can_withdraw2: function(c, s){
         } else if (s.structureType == STRUCTURE_TERMINAL){
             return (Memory.room_strategy[c.room.name].storage_low || (! Memory.room_strategy[c.room.name].terminal_low)) 
         } else if (s.structureType == STRUCTURE_STORAGE ||
-                    (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('store')))){
+                    (s.pos.lookFor('flag')[0] && ( s.pos.lookFor('flag')[0].name.includes('stor')))){
             //If they aren't trying to restock the things, they should be 
             //depositing in storage and terminal, not taking from it
             //console.log(c.name)
@@ -134,6 +134,8 @@ can_store: function(c, s) {
             return (s.store.energy < 666000)
         if (s.structureType == STRUCTURE_TERMINAL)
             return (Memory.room_strategy[c.room.name].terminal_low && (! Memory.room_strategy[c.room.name].storage_low))
+        if (s.pos.lookFor('flag')[0].name.includes('stor'))
+            return true
     } else {
         //Solominers, truckers, etc: they know what they're doing
         return true
@@ -150,7 +152,7 @@ default_desired_hits: {
 get_desired_hits: function(structure){
     var value = this.get([Memory, 'room_strategy', structure.pos.roomName, structure.structureType, 'desired_hits'])
     if (value === undefined) value = this.default_desired_hits[structure.structureType]
-    if (value === undefined) value = structure.maxHits
+    if (value === undefined) value = structure.hitsMax
     return value
 },
 

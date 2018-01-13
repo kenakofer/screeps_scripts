@@ -12,10 +12,10 @@ module.exports = {
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
             'spawn_priority': ['role_harvester', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
-            'role_harvester': {'desired_number':1, 'parts':[MOVE,WORK,CARRY] },
+            'role_harvester': {'desired_number':6, 'parts':[MOVE,WORK,CARRY] },
             'role_guard': {'desired_number':1, 'parts':[MOVE,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':1, 'parts':[MOVE,WORK,CARRY] },
-            'role_builder': {'desired_number':5, 'parts':[MOVE,WORK,CARRY] },
+            'role_builder': {'desired_number':0, 'parts':[MOVE,WORK,CARRY] }, //Harvesters are like builders when spawn is full at lvl 1, and harvesters should make the transition into controller2 smoother
             'role_solominer': {'parts':[WORK,WORK,WORK,WORK,WORK,MOVE]}, //Don't make this until you're shifting to the next
             'name': 'controller1',
         }
@@ -102,31 +102,12 @@ module.exports = {
         var updates = {
             'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
-            'role_restocker':{'desired_number':2, 'parts':[MOVE, CARRY,CARRY] },
+            'role_restocker':{'desired_number':3, 'parts':[MOVE,MOVE, CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,ATTACK,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
             'role_builder':  {'desired_number':3, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY] },
             'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]},
             'name': 'controller3',
-        }
-        Object.keys(updates).forEach(function(key){
-            Memory.room_strategy[roomName][key] = updates[key]
-        });
-    },
-
-
-    //For controller level 3, to minimize the creep count for CPU
-    controller3_minimal: function(roomName){
-        if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
-        var updates = {
-            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
-            'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
-            'role_restocker':{'desired_number':1, 'parts':[MOVE,MOVE, CARRY,CARRY,CARRY,CARRY] },
-            'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,ATTACK,ATTACK,TOUGH,TOUGH] },
-            'role_upgrader': {'desired_number':0, 'parts':[MOVE,MOVE, WORK,WORK, CARRY,CARRY] },
-            'role_builder':  {'desired_number':2, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
-            'role_solominer':{'parts':[WORK,WORK,WORK,WORK,WORK, MOVE]},
-            'name': 'controller3_minimal',
         }
         Object.keys(updates).forEach(function(key){
             Memory.room_strategy[roomName][key] = updates[key]
@@ -139,7 +120,7 @@ module.exports = {
         var updates = {
             'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer', 'role_trucker' ],
             'role_harvester':{'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
-            'role_restocker':{'desired_number':2, 'parts':[MOVE,MOVE, CARRY,CARRY,CARRY,CARRY] },
+            'role_restocker':{'desired_number':3, 'parts':[MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
             'role_guard':    {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK] },
             'role_builder':  {'desired_number':1, 'parts':[MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
             'role_upgrader':  {'desired_number':1, 'parts':[MOVE,MOVE, WORK,WORK,WORK,WORK,WORK,WORK,WORK, CARRY] },
@@ -264,7 +245,7 @@ module.exports = {
         // Choose a level based on eca
         var eca = room.energyCapacityAvailable
         if (eca < 550){
-            if (Memory.room_strategy[roomName] === undefined){
+            if (! f.get([Memory.room_strategy, roomName, 'name'])){
                 // Set a baseline for new, not bootstrapped rooms
                 console.log('Automatically setting '+roomName+' to controller1')
                 return this.controller1(roomName)
@@ -286,9 +267,27 @@ module.exports = {
             }
         //Controller4: For 1300 < eca < 1800
         } else if (eca < 1800){
-            if (Memory.room_strategy[roomName].name != 'controller3'){
-                console.log('Automatically setting '+roomName+' to controller3')
-                return this.controller3(roomName)
+            if (Memory.room_strategy[roomName].name != 'controller4'){
+                console.log('Automatically setting '+roomName+' to controller4')
+                return this.controller4(roomName)
+            }
+        //Controller5: For 1800 < eca < 2300
+        } else if (eca < 2300){
+            if (Memory.room_strategy[roomName].name != 'controller5'){
+                console.log('Automatically setting '+roomName+' to controller5')
+                return this.controller5(roomName)
+            }
+        //Controller6: For 2300 < eca < 5300
+        } else if (eca < 5300){
+            if (Memory.room_strategy[roomName].name != 'controller6'){
+                console.log('Automatically setting '+roomName+' to controller6')
+                return this.controller6(roomName)
+            }
+        //Controller7: For 5300 < eca < 12300
+        } else if (eca < 12300){
+            if (Memory.room_strategy[roomName].name != 'controller7'){
+                console.log('Automatically setting '+roomName+' to controller7')
+                return this.controller7(roomName)
             }
         } else {
             console.log('uncaught')

@@ -4,6 +4,7 @@ var population = require('population')
 var structures = require('structures')
 var construction = require('construction')
 var memory_set = require('memory_set')
+
 //var room_control = require('room_control')
 
 module.exports.loop = function () {

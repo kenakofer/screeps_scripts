@@ -12,8 +12,8 @@ construction_order: [
     'extension01', 
     'tower1', 
     'extension02', 
-    'tower2', 
     'link1','link2',
+    'tower2', 
     'storage', 
     'extension03','extension04','extension05',
     'link3','link4','link5','link6',
@@ -41,6 +41,11 @@ check_construction_sites: function(roomName){
         //console.log('There is construction already')
         return false
     }
+    // If the room is at level 1, don't worry about any construction other than spawn
+    if (room.controller.level === 1){
+        return this.check_construction_type(room, 'spawn')
+    }
+
     // Run through the construction order and see if anything is needed
     for (var i in this.construction_order){
         //console.log(this.construction_order[i])
@@ -70,17 +75,21 @@ check_construction_type: function(room, entry){
     if (!flag)
         return false
 
-    if (structure_type != 'extension'){
+    if (structure_type == 'extension'){
+        var r = this.create_extension_sites(flag)
+        if (r)
+            return r
+        return this.create_extension_roads(flag)
+    } else if (structure_type == 'storage'){
+        var r = this.create_storage_site(flag)
+        if (r)
+            return r
+    } else {
         var r = room.createConstructionSite(flag.pos, structure_type)
         if (r === OK) {
             console.log('constructing a '+entry+' in '+room.name)
             return true
         }
-    } else {
-        var r = this.create_extension_sites(flag)
-        if (r)
-            return r
-        return this.create_extension_roads(flag)
 
     }
 },
@@ -91,7 +100,7 @@ create_extension_sites: function(flag){
     // structure there, don't build there
     var coords = [[0,0],[0,1],[1,0],[-1,0],[0,-1]]
     var room = Game.rooms[flag.pos.roomName]
-    console.log(flag)
+    //console.log(flag)
     coords = coords.map(c => new RoomPosition(c[0]+flag.pos.x, c[1]+flag.pos.y, room.name))
     coords = coords.sort(function(c1,c2){return room.controller.pos.getRangeTo(c1) - room.controller.pos.getRangeTo(c2)});
     // Now we have the coordinates sorted in order of which is closest
@@ -135,5 +144,39 @@ create_extension_roads: function(flag){
     return r
 },
 
+create_storage_site: function(flag){
+    // If RCL is high enough for a storage, and there isn't one there, destroy
+    // any containers on the site and construct a storage
+    // If RCL isn't high enough, try to build a container on the spot
+    var room = Game.rooms[flag.pos.roomName]
+    var rcl = room.controller.level
+    if (CONTROLLER_STRUCTURES['storage'][rcl] >= 1){
+        // If there's a storage there already, skip
+        var storage = flag.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType === STRUCTURE_STORAGE)[0]
+        if (storage)
+            return false
+        // If there's a container there, we need to destroy it.
+        var container = flag.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType === STRUCTURE_CONTAINER)[0]
+        if (container){
+            container.destroy()
+            console.log('destroying a container to make way for storage in '+room.name)
+            return true
+        }
+        // Otherwise try to construct a storage on the site
+        var r = room.createConstructionSite(flag.pos, STRUCTURE_STORAGE)
+        if (r === OK) {
+            console.log('constructing a storage in '+room.name)
+            return true
+        }
+    } else {
+        // RCL is not high enough for a storage, so build a container on the
+        // spot instead
+        var r = room.createConstructionSite(flag.pos, STRUCTURE_CONTAINER)
+        if (r === OK) {
+            console.log('constructing a container (in storage spot) in '+room.name)
+            return true
+        }
+    }
+},
 }
 
