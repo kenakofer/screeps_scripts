@@ -8,9 +8,9 @@ module.exports = {
  * extensions also include surrounding roads.
  */
 construction_order: [
+    'tower1', 
     'spawn1',
     'extension01', 
-    'tower1', 
     'extension02', 
     'link1','link2',
     'tower2', 
@@ -34,6 +34,11 @@ check_construction_sites: function(roomName){
     // If it isn't my room, don't do it!
     if ((!room) || (!room.controller) || (!room.controller.my)){
         //console.log('the room isn\'t mine')
+        return false
+    }
+    if (room.controller.level < 3){
+        // The new strategy is to bootstrap a room all the way to level 3, in
+        // order to build a tower first
         return false
     }
     // If there's a current construction project, we can wait.
