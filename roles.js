@@ -11,15 +11,12 @@ role_solominer: {
             //prioritize the link, other storage is overflow
             r = jobs.check_store_link(c) || jobs.check_store(c)        
         }
-        if (c.memory.mining_flag.includes('remote'))
-            jobs.repair_nomove(c)
         jobs.check_solomining(c, c.memory.mining_flag)
         || jobs.check_construction(c, true) //Set the nomove parameter so they don't wander away. This is useful mainly for constructing the containers they will store in.
-        if (! r && r != OK){
+        if (! r && r !== OK){
             // An attempt to store energy failed, so drop the energy on the ground instead
             c.drop(RESOURCE_ENERGY)
         }
-        //jobs.check_ondropped(c);
     },
 },
 
@@ -149,6 +146,17 @@ role_builder: {
         //check_towers(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
+        (c.job = 'Nothing to do');
+    },
+},
+
+role_demolisher: {
+    run: function(c) {
+        jobs.check_healself(c);
+
+        // Move to the target room, and just destroy stuff.
+        jobs.check_home_room(c) ||
+        jobs.check_demolishion(c) ||
         (c.job = 'Nothing to do');
     },
 },

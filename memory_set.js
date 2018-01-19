@@ -29,9 +29,9 @@ module.exports = {
     controller2: function(roomName){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority': ['role_restocker', 'role_solominer', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
-            'role_harvester': {'desired_number':0, 'parts':[MOVE,WORK,CARRY] },
-            'role_restocker': {'desired_number':2, 'parts':[MOVE, CARRY, CARRY] },
+            'spawn_priority': ['role_solominer', 'role_harvester', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
+            'role_harvester': {'desired_number':2, 'parts':[MOVE,WORK,CARRY] },
+            'role_restocker': {'desired_number':0, 'parts':[MOVE, CARRY, CARRY] },
             'role_guard': {'desired_number':1, 'parts':[MOVE,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':1, 'parts':[MOVE,WORK,CARRY] },
             'role_builder': {'desired_number':3, 'parts':[MOVE, MOVE, WORK,WORK, CARRY,CARRY] },
@@ -222,6 +222,22 @@ module.exports = {
                 this.increase_desired_hits(roomName, STRUCTURE_RAMPART, amount)
             }
         }
+    },
+
+    // Set up the demolishing of a room
+    // eg. require('memory_set').demolish_room('E38S38', 'E36S38', ['E36S38','E36S39','E37S39','E37S40','E38S40','E39S40','E39S39','E39S38','E38S38'])
+    demolish_room: function(room, fromRoom, room_path){
+        if (! Memory.room_strategy[room]) Memory.room_strategy[room] = {}
+        var updates = {
+            'spawn_priority':['role_demolisher'],
+            'role_demolisher':{'spawn_room':fromRoom, 'parts':[WORK,WORK,WORK, MOVE,MOVE,MOVE,MOVE, HEAL], 'desired_number':1},
+            'room_path':room_path,
+            'name': 'demolish_room',
+        }
+        Object.keys(updates).forEach(function(key){
+            Memory.room_strategy[room][key] = updates[key]
+        });
+
     },
 
 

@@ -49,10 +49,20 @@ check_population: function(rooms_with_spawn){
                         
                         var result = spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
                         //console.log(r)
-                        if (result === ERR_NOT_ENOUGH_ENERGY && r=='role_restocker'){
-                            //Emergency catch for high level rooms where the available energy has dropped too low to spawn the more expensive restocker
-                            spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_restocker', home_room: roomName})
-                            Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency restocker to fix it. Just thought you\'d wanna know!', 1)
+                        if (result === ERR_NOT_ENOUGH_ENERGY){
+                            if (r=='role_restocker') {
+                                // Emergency catch for high level rooms where
+                                // the available energy has dropped too low to
+                                // spawn the more expensive restocker
+                                spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_restocker', home_room: roomName})
+                                Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency restocker to fix it. Just thought you\'d wanna know!', 1)
+                            } else {
+                                // Break from iterating the spawn order in this
+                                // room: Don't try to spawn things further down
+                                // the list
+                                console.log(roomName+'failed to spawn a'+r)
+                                break;
+                            }
                         }
                         break;
                     }
@@ -80,7 +90,7 @@ check_flag_creeps: function(){
                 if (f.get([Memory.room_strategy, mine_in_room, 'role_solominer', 'spawn_room'])) {
                     spawn_in_room = Memory.room_strategy[mine_in_room].role_solominer.spawn_room
                 }
-                if (Game.rooms[spawn_in_room]){
+                if (Game.rooms[spawn_in_room] && Memory.room_strategy[mine_in_room].role_solominer){
                     var spawn = f.get([Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS), 0])
                     if (spawn){
                     
@@ -95,7 +105,7 @@ check_flag_creeps: function(){
             }
         }
         //Create trucker
-        if (f_name.includes('trucker_pickup')){
+        if (f_name.includes('trucker') && f_name.includes('pickup')){
             if (! f.get([Game, 'creeps', [Memory, f_name]]) 
                     || f.imminent_death(Game.creeps[Memory[f_name]])
             ) {

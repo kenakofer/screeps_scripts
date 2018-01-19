@@ -740,4 +740,57 @@ check_boosts: function(c){
     return false
 },
 
+check_demolishion: function(c){
+    // Check for safe mode
+    if (c.room.controller && c.room.controller.safeMode){
+        // Don't send any more
+        Memory.room_strategy[c.room.name] = undefined
+    }
+    if (c.room.controller.my){
+        // Something has gone horribly wrong. Please don't destroy anything in
+        // my own room
+        console.log('I won\'t break my own room!')
+        return false
+    }
+    // Destroy stuff, starting with any demolish flags
+    var flag = c.room.find(FIND_FLAGS, {filter: (f) => f.name.includes('demolish')})[0]
+    if (flag){
+        var struct = flag.pos.lookFor(LOOK_STRUCTURES)[0]
+        if (! struct) {
+            //flag.remove()
+        } else {
+            var r = c.dismantle(struct)   
+            if (r == OK)
+                return true
+            else if (r == ERR_NOT_IN_RANGE){
+                c.moveTo(struct)
+                return true
+            } else {
+                console.log('returned '+r)
+                return false
+            }
+        }
+    }
+    // There is no demolish flags. Look for the closest of: A tower with energy, or a spawn.
+    var struct = c.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {filter: function(s){
+        return ((s.structureType == STRUCTURE_TOWER && s.energy > 0) ||
+                (s.structureType == STRUCTURE_SPAWN) ||
+                (s.structureType == STRUCTURE_EXTENSION))
+    }});
+    
+
+},
+
+check_healself: function(c){
+    if (c.hits == c.hitsMax)
+        return false
+    else {
+        var r = c.heal(c)
+        if (r === OK)
+            return true
+        else
+            return false
+    }
+},
+
 };
