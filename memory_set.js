@@ -240,6 +240,29 @@ module.exports = {
 
     },
 
+    // Increase capacity of the trucker for remote mining
+    // eg: require('memory_set').increase_trucker_capacity('E44S37')
+
+    increase_trucker_capacity: function(roomName, increase_amount){
+        increase_amount = increase_amount || 1
+        if (! f.get([Memory.room_strategy, roomName, 'role_trucker']) == 'remote_mine_room'){
+            console.log('This room doesn\'t have truckers in it!')
+            return false
+        }
+        var current_move_parts = Memory.room_strategy[roomName].role_trucker.parts.filter(p => p == MOVE).length
+        var new_move_parts = current_move_parts + increase_amount
+        console.log(new_move_parts)
+        var new_parts=[]
+        for (var i=0; i<new_move_parts; i++){
+            new_parts.push(MOVE)
+        }
+        for (var i=0; i<2*new_move_parts; i++){
+            new_parts.push(CARRY)
+        }
+        Memory.room_strategy[roomName].role_trucker.parts = new_parts
+        return new_parts
+    },
+
 
     start_mineral_mining(roomName){
         if (_.contains(Memory.room_strategy[roomName].role_mineral_miner))
