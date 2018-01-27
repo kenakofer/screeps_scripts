@@ -488,6 +488,10 @@ check_home_room: function(c) {
         if (Game.time % 2 == 0) c.say("to "+ c.memory.home_room)
         else c.say(' via '+nextRoom)
         c.memory['nextRoom']=nextRoom
+
+        //Jettison extra cargo
+        c.drop(RESOURCE_ENERGY)
+
         return c.memory.home_room
     }
 },

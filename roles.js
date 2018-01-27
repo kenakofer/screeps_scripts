@@ -38,10 +38,11 @@ role_claimer: {
 role_harvester: {
     run: function(c) {
 
-
+        if (jobs.check_home_room(c))
+            return true
 
         jobs.check_ondropped(c);
-        jobs.check_home_room(c) ||
+
         jobs.check_dropped(c, true, 50) ||
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||
@@ -140,7 +141,6 @@ role_builder: {
         jobs.check_ondropped(c);
 
         jobs.check_invaders(c) ||
-        jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false) || 
         jobs.check_dropped(c, true, 200) ||
         jobs.check_mining(c) ||
