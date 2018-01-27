@@ -183,5 +183,24 @@ create_storage_site: function(flag){
         }
     }
 },
+
+// Show which flags you have not yet placed in the room. Can be helpful to catch typos en masse
+// eg: require('construction').check_missing_flags('E43S37')
+
+check_missing_flags: function(roomName){
+    var flags_to_check = ['barracks','upgrade','gather_role_restocker'].concat(this.construction_order);
+
+    for (var flag_name in Game.flags){
+        var f = Game.flags[flag_name]
+        if (f.pos.roomName == roomName){
+            flags_to_check = flags_to_check.filter(fname => ! flag_name.includes(fname))
+        }
+    }
+
+    return flags_to_check
+
+
+},
+
 }
 
