@@ -37,8 +37,11 @@ role_claimer: {
 
 role_harvester: {
     run: function(c) {
-        jobs.check_ondropped(c);
 
+
+
+        jobs.check_ondropped(c);
+        jobs.check_home_room(c) ||
         jobs.check_dropped(c, true, 50) ||
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||
