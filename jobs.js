@@ -222,6 +222,7 @@ check_mining: function(c){
 
     if ( (! c.memory.mining) && f.get_energy(c) == 0) {
         var mine = c.pos.findClosestByPath(FIND_SOURCES, {range:1, filter: (s) =>
+            s.energy > 100 &&
         	//If there is a flag on the source position whose name is in memory, with the value of a currently living creep
             (! f.get(  [Game, 'creeps', [Memory, [s.pos.findInRange(FIND_FLAGS, 1), 0, 'name']]]  ))
             //TODO also if it's not in the room/not mining?

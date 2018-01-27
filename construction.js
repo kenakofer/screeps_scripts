@@ -261,5 +261,12 @@ check_missing_flags: function(roomName){
 
 },
 
+// Automatically add all the flags to a remote mine room
+
+add_remote_mine_flags: function(roomName){
+
+
+},
+
 }
 
