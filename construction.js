@@ -17,7 +17,7 @@ construction_order: [
     'storage', 
     'extension03','extension04','extension05',
     'link3','link4','link5','link6',
-    'rampart','constructedWall',
+    'rampart','wall',
     'extension06','extension07','extension08','extension09','extension10','extension11','extension12','extension13','extension14',
     'spawn2','spawn3',
     'terminal', 'extractor',
@@ -74,6 +74,11 @@ check_construction_type: function(room, entry){
         structure_type = entry.substring(0,index)
         structure_index = entry.substring(index)
     }
+
+    if (structure_type == 'wall')
+        return this.create_wall_lines(room)
+    if (structure_type == 'rampart')
+        return this.create_ramparts(room)
 
     var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.includes(entry)})[0]
     //There is no flag for this entry, so skip it
@@ -147,6 +152,63 @@ create_extension_roads: function(flag){
         }
     }
     return r
+},
+
+create_wall_lines: function(room){
+    var return_val = false
+    for (var index = 0; index<10; index++){
+        var wall_flag_pair = room.find(FIND_FLAGS, {filter: (f) => f.name.includes('wall'+index)})
+        var positions_to_build = []
+        if (wall_flag_pair.length == 2){
+            
+            if (wall_flag_pair[0].pos.x == wall_flag_pair[1].pos.x){
+                // They are arranged in the same column
+                wall_flag_pair.sort(f => -f.pos.y)
+                for (var y=wall_flag_pair[0].pos.y; y<=wall_flag_pair[1].pos.y; y++){
+                    positions_to_build.push([wall_flag_pair[0].pos.x, y])
+                }
+                console.log(positions_to_build)
+            } else if (wall_flag_pair[0].pos.y == wall_flag_pair[1].pos.y){
+                // They are arranged in the same row
+                wall_flag_pair.sort(f => -f.pos.x)
+                for (var x=wall_flag_pair[0].pos.x; x<=wall_flag_pair[1].pos.x; x++){
+                    positions_to_build.push([x, wall_flag_pair[0].pos.y])
+                }
+            } else {
+                console.log(wall_flag_pair+' are not in line with each other!')
+            }
+        }
+
+        // Now we have a list of places to build walls. check for blocking flags
+        positions_to_build.forEach(function(p){
+            console.log('trying to build '+p)
+            var block_flags = (new RoomPosition(p[0],p[1], room.name)).lookFor(LOOK_FLAGS)
+            if (block_flags.length == 0){
+                var r = room.createConstructionSite(p[0],p[1], STRUCTURE_WALL)
+                if (r === OK)
+                    return_val = true
+                console.log(r)
+            }
+        })
+        if (return_val)
+            return return_val
+        
+
+    }
+
+    return return_val
+    
+
+},
+
+create_ramparts: function(room){
+    var rampart_flags = room.find(FIND_FLAGS, {filter: (f) => f.name.includes('rampart')})
+    for (var i in rampart_flags){
+        var r = room.createConstructionSite(rampart_flags[i].pos, STRUCTURE_RAMPART)
+        if (r === OK)
+            return true
+    }
+    return false
 },
 
 create_storage_site: function(flag){
