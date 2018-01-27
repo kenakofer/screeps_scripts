@@ -42,7 +42,7 @@ check_population: function(rooms_with_spawn){
                 var number = f.get([Memory, 'room_strategy', roomName, r, 'desired_number'])
                 if ( number && ((! role_count[r]) || role_count[r].length < number)) {
                     var spawnAt = spawn
-                    if ( f.get([Memory, 'room_strategy', roomName, r, 'spawn_room'])) {
+                    if ( f.get([Game.rooms, [Memory, 'room_strategy', roomName, r, 'spawn_room']])) {
                         spawnAt = Game.rooms[ Memory.room_strategy[roomName][r].spawn_room ].find(FIND_MY_SPAWNS)[0]
                     }
                     if (spawnAt) {
