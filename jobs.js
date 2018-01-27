@@ -78,7 +78,6 @@ check_ondropped: function(c){
         (dropped.resourceType === RESOURCE_ENERGY && dropped.amount < c.carryCapacity))
     	return false
     r = c.pickup(dropped)
-    //console.log('picking up: '+r)
     if (r==OK){
         c.picked_up=true
         return OK
@@ -142,10 +141,6 @@ check_terminal: function(c) {
                     console.log('Could not deposit energy: '+r)
             }
             else {
-                    //TODO this segment may never get reached, since the restockers check_withdraw when they have no energy. Is it needed?
-                    //Update: It is sometimes reached in W8N6
-                    //console.log('This strange segment is being reached by creep '+c.name)
-                    //Withdraw from the giving structure
                     r = c.withdraw(from, RESOURCE_ENERGY)
                     if (r === ERR_NOT_IN_RANGE){
                             c.moveTo(to, {range:1,})
@@ -353,8 +348,6 @@ trucker_dropoff:  function(c){
         filter: (s) => [STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK].includes(s.structureType)
     })[0]
 
-    //console.log(store)
-    //console.log(flag)
     c.moveTo(flag, {range:1,})
     r = c.transfer(store, "energy")
     return r
@@ -364,7 +357,6 @@ trucker_pickup:  function(c){
     c.job = 'trucker_pickup'
     if (_.sum(c.carry) > .5 * c.carryCapacity)
         return false
-    //console.log(f.get([c, 'memory', 'pickup_flag']))
     flag = Game.flags[f.get([c, 'memory', 'pickup_flag'])]
     if (flag.pos.roomName != c.room.name){
         c.moveTo(flag, {range:5,})
@@ -381,13 +373,10 @@ trucker_pickup:  function(c){
             c.moveTo(flag, {range:0,})
         return true
     }
-    //console.log(store)
-    //console.log(flag)
     if (flag.pos.roomName == c.room.name){
          r = c.withdraw(store, "energy")
          if (r == ERR_NOT_IN_RANGE)
             c.moveTo(flag, {range:1,})
-        //console.log(r)
     }
 
     return true
@@ -406,7 +395,6 @@ repair_nomove: function(c){
             return false
         }
     });
-    //console.log('damaged: '+damagedStuff)
     if (! damagedStuff[0])
         return false
     c.repair(damagedStuff[0])
@@ -480,10 +468,8 @@ check_home_room: function(c) {
             // We have a path to guide us there.
             index = path.indexOf(c.room.name)
             nextRoom = path[index+1]
-            //console.log(c.name+' is going next to '+nextRoom)
         }
         var r = c.moveTo(new RoomPosition(25,25, nextRoom), {range:5, visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
-        //console.log('result: '+r)
         if (r == -2) {
             r = c.moveTo(new RoomPosition(25,25, nextRoom), {range:10, visualizePathStyle: {stroke: '#ff0', opacity: .3}, maxOps: 10000} )
         }
@@ -523,7 +509,6 @@ check_store: function(c, types, distance){
     distance = distance || 5
 
     c.job = 'check_store'
-    //console.log(c.memory.role + 'check_store')
 
     if (_.sum(c.carry)>0) {
         store = c.pos.findClosestByPath(FIND_STRUCTURES, {range:1,
@@ -533,7 +518,6 @@ check_store: function(c, types, distance){
                             f.can_store(c, s))
         });
         if (store) {
-            //console.log(store)
             r = c.transfer(store, "energy")
             //Only go out of your way to store energy if you're full or a restocker, and the store is close by
             if (r == ERR_NOT_IN_RANGE && 
@@ -740,7 +724,6 @@ check_boosts: function(c){
         if (r === ERR_NOT_FOUND){
             return false
         }
-        //console.log(r)
         return true
     }
     return false
