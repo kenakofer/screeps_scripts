@@ -367,7 +367,7 @@ trucker_pickup:  function(c){
     //console.log(f.get([c, 'memory', 'pickup_flag']))
     flag = Game.flags[f.get([c, 'memory', 'pickup_flag'])]
     if (flag.pos.roomName != c.room.name){
-        c.moveTo(flag, {range:1,})
+        c.moveTo(flag, {range:5,})
         return true
     }
     store = flag.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -378,7 +378,7 @@ trucker_pickup:  function(c){
         resource = flag.pos.findInRange(FIND_DROPPED_RESOURCES,1)
         r = c.pickup(resource)
         if (r != OK)
-            c.moveTo(flag, {range:1,})
+            c.moveTo(flag, {range:0,})
         return true
     }
     //console.log(store)
