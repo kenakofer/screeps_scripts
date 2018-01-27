@@ -167,7 +167,6 @@ create_wall_lines: function(room){
                 for (var y=wall_flag_pair[0].pos.y; y<=wall_flag_pair[1].pos.y; y++){
                     positions_to_build.push([wall_flag_pair[0].pos.x, y])
                 }
-                console.log(positions_to_build)
             } else if (wall_flag_pair[0].pos.y == wall_flag_pair[1].pos.y){
                 // They are arranged in the same row
                 wall_flag_pair.sort(f => -f.pos.x)
@@ -181,13 +180,11 @@ create_wall_lines: function(room){
 
         // Now we have a list of places to build walls. check for blocking flags
         positions_to_build.forEach(function(p){
-            console.log('trying to build '+p)
             var block_flags = (new RoomPosition(p[0],p[1], room.name)).lookFor(LOOK_FLAGS)
             if (block_flags.length == 0){
                 var r = room.createConstructionSite(p[0],p[1], STRUCTURE_WALL)
                 if (r === OK)
                     return_val = true
-                console.log(r)
             }
         })
         if (return_val)

@@ -30,7 +30,7 @@ check_withdraw: function(c, noCheckEmpty, nomove){
             //Try to do the withdrawl
             r = c.withdraw(store, "energy")
             if (r == ERR_NOT_IN_RANGE){
-                c.moveTo(store)
+                c.moveTo(store, {range:1,})
                 return store
             }
             if (r==OK)
@@ -92,7 +92,7 @@ check_dropped: function(c, needEmpty, maxOps,){
         return false
     c.job = 'check_dropped'
 
-    var dropped = c.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {maxOps:maxOps, 
+    var dropped = c.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {maxOps:maxOps, range:1,
         filter: (r) => r.resourceType == 'energy' && r.amount > c.carryCapacity
     })
     if (! dropped)
@@ -100,7 +100,7 @@ check_dropped: function(c, needEmpty, maxOps,){
 
     var r = c.pickup(dropped)
     if (r == ERR_NOT_IN_RANGE){
-        c.moveTo(dropped)
+        c.moveTo(dropped, {range:1,})
         return dropped
     }
     if (r == OK) {
@@ -133,7 +133,7 @@ check_terminal: function(c) {
                     //Deposit in the receiving structure
                     r = c.transfer(to, RESOURCE_ENERGY)
                     if (r === ERR_NOT_IN_RANGE){
-                            c.moveTo(to)
+                            c.moveTo(to, {range:1,})
                             return true
                     }
                     if (r === OK) {
@@ -148,7 +148,7 @@ check_terminal: function(c) {
                     //Withdraw from the giving structure
                     r = c.withdraw(from, RESOURCE_ENERGY)
                     if (r === ERR_NOT_IN_RANGE){
-                            c.moveTo(to)
+                            c.moveTo(to, {range:1,})
                             return true
                     }
                     if (r === OK) {
@@ -166,7 +166,7 @@ sign_controller: function(c, roomName, message){
     c.job = 'sign_controller'
 
     if (c.room.name !== roomName){
-            c.moveTo(new RoomPosition(15, 15, roomName))
+            c.moveTo(new RoomPosition(15, 15, roomName), {range:5,})
             return true
     }
     controller = get([Game.rooms[roomName], 'controller'])
@@ -176,7 +176,7 @@ sign_controller: function(c, roomName, message){
     }
     r = c.signController(controller, message)
     if (r == ERR_NOT_IN_RANGE){
-            c.moveTo(controller)
+            c.moveTo(controller, {range:1,})
             return true
     }
     if (r == OK){
@@ -193,7 +193,7 @@ check_invaders: function(c){
     if (target){
         var r = c.attack(target) 
         if (r == ERR_NOT_IN_RANGE) {
-            c.moveTo(target, {visualizePathStyle: {stroke: '#f00', opacity: .6}});
+            c.moveTo(target, {range:1, visualizePathStyle: {stroke: '#f00', opacity: .6}});
             return target
         }
         if (r==OK)
@@ -221,7 +221,7 @@ check_mining: function(c){
     }
 
     if ( (! c.memory.mining) && f.get_energy(c) == 0) {
-        var mine = c.pos.findClosestByPath(FIND_SOURCES, {filter: (s) =>
+        var mine = c.pos.findClosestByPath(FIND_SOURCES, {range:1, filter: (s) =>
         	//If there is a flag on the source position whose name is in memory, with the value of a currently living creep
             (! f.get(  [Game, 'creeps', [Memory, [s.pos.findInRange(FIND_FLAGS, 1), 0, 'name']]]  ))
             //TODO also if it's not in the room/not mining?
@@ -239,7 +239,7 @@ check_mining: function(c){
     if (c.memory.mining){
         var target = Game.getObjectById(c.memory.mining);
         if (c.harvest(target) == ERR_NOT_IN_RANGE){
-            c.moveTo(target, {visualizePathStyle: {stroke: '#ff0', opacity: .3}})
+            c.moveTo(target, {range:1, visualizePathStyle: {stroke: '#ff0', opacity: .3}})
         }
     }
     return c.memory.mining
@@ -263,7 +263,7 @@ check_mineral_mining: function(c){
     if (c.memory.mining){
         var target = Game.getObjectById(c.memory.mining);
         if (c.harvest(target) == ERR_NOT_IN_RANGE){
-            c.moveTo(target, {visualizePathStyle: {stroke: '#ff0', opacity: .3}})
+            c.moveTo(target, {range:1, visualizePathStyle: {stroke: '#ff0', opacity: .3}})
         }
     }
     return c.memory.mining
@@ -288,7 +288,7 @@ check_spawn: function(c, prevId){
     if (target) {
     	r = c.transfer(target, RESOURCE_ENERGY)
         if(r == ERR_NOT_IN_RANGE)
-            c.moveTo(target, {visualizePathStyle: {stroke: '#ffffff', opacity: .3}});
+            c.moveTo(target, {range:1, visualizePathStyle: {stroke: '#ffffff', opacity: .3}});
         if (r == OK && prevId===undefined) {
             // Now that we've filled it, make an effort to move to another
             if (f.get_energy(c)-target.energyCapacity > 0)
@@ -306,12 +306,12 @@ check_towers: function(c){
 
     if (f.get_energy(c) == 0)
             return false
-    var target = c.pos.findClosestByPath(FIND_STRUCTURES, {
+    var target = c.pos.findClosestByPath(FIND_STRUCTURES, {range:1,
         filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
     });
     if (target) {
         if(c.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            c.moveTo(target, {visualizePathStyle: {stroke: '#ffffff', opacity: .3}});
+            c.moveTo(target, {range:1, visualizePathStyle: {stroke: '#ffffff', opacity: .3}});
         }
     }
     return target
@@ -326,7 +326,7 @@ upgrade_controller: function(c) {
     var r = c.upgradeController(c.room.controller)
     
     if(r === ERR_NOT_IN_RANGE) {
-        c.moveTo(c.room.controller, {visualizePathStyle: {stroke: '#00ff00', opacity: .3}});
+        c.moveTo(c.room.controller, {range:3, visualizePathStyle: {stroke: '#00ff00', opacity: .3}});
         return c.room.controller
     }
     else if (r===OK){
@@ -354,8 +354,9 @@ trucker_dropoff:  function(c){
 
     //console.log(store)
     //console.log(flag)
-    c.moveTo(flag)
+    c.moveTo(flag, {range:1,})
     r = c.transfer(store, "energy")
+    return r
 },
 
 trucker_pickup:  function(c){
@@ -365,7 +366,7 @@ trucker_pickup:  function(c){
     //console.log(f.get([c, 'memory', 'pickup_flag']))
     flag = Game.flags[f.get([c, 'memory', 'pickup_flag'])]
     if (flag.pos.roomName != c.room.name){
-        c.moveTo(flag)
+        c.moveTo(flag, {range:1,})
         return true
     }
     store = flag.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -376,7 +377,7 @@ trucker_pickup:  function(c){
         resource = flag.pos.findInRange(FIND_DROPPED_RESOURCES,1)
         r = c.pickup(resource)
         if (r != OK)
-            c.moveTo(flag)
+            c.moveTo(flag, {range:1,})
         return true
     }
     //console.log(store)
@@ -384,7 +385,7 @@ trucker_pickup:  function(c){
     if (flag.pos.roomName == c.room.name){
          r = c.withdraw(store, "energy")
          if (r == ERR_NOT_IN_RANGE)
-            c.moveTo(flag)
+            c.moveTo(flag, {range:1,})
         //console.log(r)
     }
 
@@ -421,7 +422,7 @@ claim_controller: function(c, flag_name){
 
     var pos = flag.pos
 
-    c.moveTo(flag)
+    c.moveTo(flag, {range:1,})
     if (c.room.name !== flag.pos.roomName){
         return true
     }
@@ -451,7 +452,7 @@ check_room: function(c, roomName){
     if (c.room.name === roomName)
         return false //We're already there
     else {
-        var r = c.moveTo(new RoomPosition(25,25, roomName), {visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
+        var r = c.moveTo(new RoomPosition(25,25, roomName), {range:10, visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
         c.say("to "+ roomName)
         return roomName
     }
@@ -480,10 +481,10 @@ check_home_room: function(c) {
             nextRoom = path[index+1]
             //console.log(c.name+' is going next to '+nextRoom)
         }
-        var r = c.moveTo(new RoomPosition(25,25, nextRoom), {visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
+        var r = c.moveTo(new RoomPosition(25,25, nextRoom), {range:5, visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
         //console.log('result: '+r)
         if (r == -2) {
-            r = c.moveTo(new RoomPosition(25,25, nextRoom), {visualizePathStyle: {stroke: '#ff0', opacity: .3}, maxOps: 10000} )
+            r = c.moveTo(new RoomPosition(25,25, nextRoom), {range:10, visualizePathStyle: {stroke: '#ff0', opacity: .3}, maxOps: 10000} )
         }
         if (Game.time % 2 == 0) c.say("to "+ c.memory.home_room)
         else c.say(' via '+nextRoom)
@@ -500,11 +501,11 @@ check_construction: function(c, nomove){
     
     c.job = 'check_construction'
 
-    var target = c.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+    var target = c.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {range:1,});
     if (target){
         var r = c.build(target)
         if (r == ERR_NOT_IN_RANGE && ! nomove) {
-            c.moveTo(target, {visualizePathStyle: {stroke: '#00f', opacity: .3}})
+            c.moveTo(target, {range:3, visualizePathStyle: {stroke: '#00f', opacity: .3}})
             return target
         }
         if (r==OK){
@@ -524,7 +525,7 @@ check_store: function(c, types, distance){
     //console.log(c.memory.role + 'check_store')
 
     if (_.sum(c.carry)>0) {
-        store = c.pos.findClosestByPath(FIND_STRUCTURES, {
+        store = c.pos.findClosestByPath(FIND_STRUCTURES, {range:1,
             filter: (s) =>  ((_.contains(types, s.structureType) ||
                             (s.pos.lookFor('flag')[0] && s.pos.lookFor('flag')[0].name.includes('stor'))) &&
                             s.store.energy < s.storeCapacity &&
@@ -537,7 +538,7 @@ check_store: function(c, types, distance){
             if (r == ERR_NOT_IN_RANGE && 
                 (_.sum(c.carry) == c.carryCapacity || c.memory.role=='role_restocker')
                 && c.pos.getRangeTo(store) < distance){
-                    c.moveTo(store)
+                    c.moveTo(store, {range:1,})
                     return store
             }
             if (r==OK) {
@@ -569,7 +570,7 @@ check_store_minerals: function(c){
             continue
         r=c.transfer(dest_struct, rtype)
         if (r === ERR_NOT_IN_RANGE){
-            c.moveTo(dest_struct)
+            c.moveTo(dest_struct, {range:1,})
             return true
         }
         if (r===OK)
@@ -591,7 +592,7 @@ check_store_link: function(c){
             var r = c.transfer(store, 'energy')
             if (r == ERR_NOT_IN_RANGE){
                 //Never go out of your way?
-                //c.moveTo(store)
+                //c.moveTo(store, {range:1,})
                 //return store
             }
             if (r==OK) {
@@ -629,7 +630,7 @@ check_labs: function(c){
                     // So the creep has the resource. Go put it in
                     r = c.transfer(lab, resource)
                     if (r === ERR_NOT_IN_RANGE){
-                        c.moveTo(lab)
+                        c.moveTo(lab, {range:1,})
                         return true
                     }
                     return (r === OK)
@@ -639,7 +640,7 @@ check_labs: function(c){
                     console.log('here')
                     r = c.withdraw(c.room.terminal, resource)
                     if (r === ERR_NOT_IN_RANGE){
-                        c.moveTo(c.room.terminal)
+                        c.moveTo(c.room.terminal, {range:1,})
                         return true
                     }
                 }
@@ -648,7 +649,7 @@ check_labs: function(c){
                 // The lab has the wrong mineral in it, and it should be removed
                 r = c.withdraw(lab, lab.mineralType)
                 if (r === ERR_NOT_IN_RANGE){
-                    c.moveTo(lab)
+                    c.moveTo(lab, {range:1,})
                     return true
                 }
 
@@ -665,7 +666,7 @@ check_labs: function(c){
                 r = c.transfer(lab, RESOURCE_ENERGY)
                 //console.log(r)
                 if (r === ERR_NOT_IN_RANGE){
-                    c.moveTo(lab)
+                    c.moveTo(lab, {range:1,})
                     return true
                 }
                 return (r === OK)
@@ -683,7 +684,7 @@ check_labs: function(c){
             // The lab has the wrong mineral in it, and it should be removed
             r = c.withdraw(lab, lab.mineralType)
             if (r === ERR_NOT_IN_RANGE){
-                c.moveTo(lab)
+                c.moveTo(lab, {range:1,})
                 return true
             }
         }
@@ -731,7 +732,7 @@ check_boosts: function(c){
         // TODO this is also the result if the creep is already boosted, but far away
         r = lab.boostCreep(c)
         if (r === ERR_NOT_IN_RANGE){
-            c.moveTo(lab)
+            c.moveTo(lab, {range:1,})
             return true
         }
         // This means the creep is already boosted
@@ -767,7 +768,7 @@ check_demolishion: function(c){
             if (r == OK)
                 return true
             else if (r == ERR_NOT_IN_RANGE){
-                c.moveTo(struct)
+                c.moveTo(struct, {range:1,})
                 return true
             } else {
                 console.log('returned '+r)
@@ -776,8 +777,9 @@ check_demolishion: function(c){
         }
     }
     // There is no demolish flags. Look for the closest of: A tower with energy, or a spawn.
-    var struct = c.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {filter: function(s){
-        return ((s.structureType == STRUCTURE_TOWER && s.energy > 0) ||
+    var struct = c.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {range:1, 
+        filter: function(s){
+            return ((s.structureType == STRUCTURE_TOWER && s.energy > 0) ||
                 (s.structureType == STRUCTURE_SPAWN) ||
                 (s.structureType == STRUCTURE_EXTENSION))
     }});
