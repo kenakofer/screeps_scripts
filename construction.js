@@ -245,7 +245,6 @@ create_storage_site: function(flag){
 
 // Show which flags you have not yet placed in the room. Can be helpful to catch typos en masse
 // eg: require('construction').check_missing_flags('E43S37')
-
 check_missing_flags: function(roomName){
     var flags_to_check = ['barracks','upgrade','gather_role_restocker'].concat(this.construction_order);
 
@@ -261,12 +260,6 @@ check_missing_flags: function(roomName){
 
 },
 
-// Automatically add all the flags to a remote mine room
-
-add_remote_mine_flags: function(roomName){
-
-
-},
 
 }
 

@@ -488,7 +488,7 @@ check_construction: function(c, nomove){
     
     c.job = 'check_construction'
 
-    var target = c.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {range:1,});
+    var target = c.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {range:3,});
     if (target){
         var r = c.build(target)
         if (r == ERR_NOT_IN_RANGE && ! nomove) {
@@ -781,6 +781,17 @@ check_healself: function(c){
         else
             return false
     }
+},
+
+check_renew: function(c){
+    var r = undefined
+    //console.log(c.body.map(b => b.type) == f.get(Memory.room_strategy, c.memory.home_room, c.memory.role, 'parts'))
+    if (c.ticksToLive > 60 && c.ticksToLive < 1200){
+        var spawn = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_SPAWN && s.energy > 150})[0]
+        if (spawn)
+            r = spawn.renewCreep(c)
+    }
+    return (r === OK)
 },
 
 };

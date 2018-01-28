@@ -82,6 +82,7 @@ role_restocker: {
         //console.log(il)
 
         jobs.check_ondropped(c);
+        //jobs.check_renew(c);
 
         if ( il==0 || (Game.time%5 === 2)){
             r =
