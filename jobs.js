@@ -782,11 +782,14 @@ check_healself: function(c){
             return false
     }
 },
-
 check_renew: function(c){
     var r = undefined
-    //console.log(c.body.map(b => b.type) == f.get(Memory.room_strategy, c.memory.home_room, c.memory.role, 'parts'))
-    if (c.ticksToLive > 60 && c.ticksToLive < 1200){
+    // See if the parts requirements for the room have changed since this creep was spawned
+    var parts = c.body.map(b => b.type)
+    var is_same_parts_set = f.arrays_equal(c.body.map(b => b.type), f.get([Memory.room_strategy, c.memory.home_room, c.memory.role, 'parts']))
+
+    // If the parts are the same, and the creep is between some threshhold ages
+    if (is_same_parts_set && c.ticksToLive > 60 && c.ticksToLive < 1200){
         var spawn = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_SPAWN && s.energy > 150})[0]
         if (spawn)
             r = spawn.renewCreep(c)
