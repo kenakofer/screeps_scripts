@@ -1,6 +1,64 @@
 var f = require('f')
 
 module.exports = {
+
+/* This method should replace both check_withdraw and
+ * check_dropped with the more intelligent solution of
+ * checking both at once, and selecting the closer.
+ */
+check_find_energy: function(c){
+    c.job = 'check_findenergy'
+
+    var needs = c.carryCapacity - _.sum(c.carry)
+    if (needs == 0)
+        return false
+
+    // Having 50 energy is still good for stuff, so only seek out energy below that level
+    if (f.get_energy(c) >= 50)
+        return false
+
+    var options = []
+
+    // Get the closest storing structure that can provide the goods
+    var store = c.pos.findClosestByPath(FIND_STRUCTURES, {filter: s => f.can_withdraw2(c,s)});
+    if (store)
+        options.push(store)
+
+    var dropped = c.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+        filter: (r) => r.resourceType == 'energy' && r.amount > needs 
+    })
+    if (dropped)
+        options.push(dropped)
+
+    //If there is neither option, it'll have to wait
+    if (options.length == 0)
+        return false
+
+    var target = c.pos.findClosestByPath(options)
+
+    // If there is dropped, go pick it up
+    if (target.resourceType){
+        var r = c.pickup(dropped)
+        if (r == ERR_NOT_IN_RANGE){
+            c.moveTo(dropped, {range:1,})
+            return dropped
+        }
+        if (r == OK) {
+            c.picked_up=true
+            return dropped
+        }
+    } else {
+        // It's a store
+        r = c.withdraw(store, "energy")
+        if (r == ERR_NOT_IN_RANGE){
+            c.moveTo(store, {range:1,})
+            return store
+        }
+        if (r==OK)
+            return store
+    }
+},
+
 //TODO refactor this anyway?
 check_withdraw: function(c, noCheckEmpty, nomove){
     
