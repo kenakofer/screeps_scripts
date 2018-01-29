@@ -51,9 +51,10 @@ module.exports = {
     bootstrap_room: function(roomName, fromRoom, room_path){
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
-            'spawn_priority':['role_claimer', 'role_harvester'],
+            'spawn_priority':['role_claimer', 'role_upgrader', 'role_harvester'],
             'role_claimer':{'spawn_room':fromRoom, 'parts':[MOVE,CLAIM]},
             'role_harvester':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':2},
+            'role_upgrader':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':1},
             'room_path':room_path,
             'name': 'bootstrap_room',
         }

@@ -124,7 +124,7 @@ role_upgrader: {
         jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false) ||
-        jobs.check_dropped(c, true, 200) ||
+        jobs.check_dropped(c, true, 400) ||
         jobs.check_mining(c) ||
         jobs.upgrade_controller(c) ||
         jobs.check_gathering_place(c) ||
@@ -143,7 +143,7 @@ role_builder: {
 
         jobs.check_invaders(c) ||
         jobs.check_withdraw(c, false, false) || 
-        jobs.check_dropped(c, true, 200) ||
+        jobs.check_dropped(c, true, 400) ||
         jobs.check_mining(c) ||
         jobs.check_construction(c) ||
         //check_spawn(c) ||
