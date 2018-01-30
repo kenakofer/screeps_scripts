@@ -13,8 +13,8 @@ check_find_energy: function(c){
     if (needs == 0)
         return false
 
-    // Having 50 energy is still good for stuff, so only seek out energy below that level
-    if (f.get_energy(c) >= 50)
+    // Having 1 energy is still good for stuff, so only seek out energy below that level
+    if (f.get_energy(c) > 0)
         return false
 
     var options = []
