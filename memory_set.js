@@ -30,7 +30,7 @@ module.exports = {
         if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
         var updates = {
             'spawn_priority': ['role_solominer', 'role_harvester', 'role_guard', 'role_upgrader', 'role_builder', 'role_claimer' ],
-            'role_harvester': {'desired_number':2, 'parts':[MOVE,WORK,CARRY] },
+            'role_harvester': {'desired_number':2, 'parts':[MOVE,MOVE, WORK, CARRY,CARRY,CARRY] },
             'role_restocker': {'desired_number':0, 'parts':[MOVE, CARRY, CARRY] },
             'role_guard': {'desired_number':1, 'parts':[MOVE,ATTACK,TOUGH,TOUGH] },
             'role_upgrader': {'desired_number':1, 'parts':[MOVE,WORK,CARRY] },
@@ -246,7 +246,7 @@ module.exports = {
 
     increase_trucker_capacity: function(roomName, increase_amount){
         increase_amount = increase_amount || 1
-        if (! f.get([Memory.room_strategy, roomName, 'role_trucker']) == 'remote_mine_room'){
+        if (! f.get([Memory.room_strategy, roomName, 'role_trucker'])){
             console.log('This room doesn\'t have truckers in it!')
             return false
         }
@@ -254,13 +254,30 @@ module.exports = {
         var new_move_parts = current_move_parts + increase_amount
         console.log(new_move_parts)
         var new_parts=[]
-        for (var i=0; i<new_move_parts; i++){
-            new_parts.push(MOVE)
-        }
-        for (var i=0; i<2*new_move_parts; i++){
-            new_parts.push(CARRY)
-        }
+
+        for (var i=0; i<new_move_parts; i++) new_parts.push(MOVE)
+        for (var i=0; i<2*new_move_parts; i++) new_parts.push(CARRY)
         Memory.room_strategy[roomName].role_trucker.parts = new_parts
+        return new_parts
+    },
+
+    // Increase work parts of the upgrader (excess energy in room!)
+    // eg: require('memory_set').increase_upgrader_work('E44S37')
+
+    increase_upgrader_work: function(roomName, increase_amount){
+        increase_amount = increase_amount || 1
+        if (! f.get([Memory.room_strategy, roomName, 'role_upgrader'])){
+            console.log('This room doesn\'t have upgraders in it!')
+            return false
+        }
+        var current_work_parts = Memory.room_strategy[roomName].role_upgrader.parts.filter(p => p == WORK).length
+        var new_work_parts = current_work_parts + increase_amount
+        console.log(new_work_parts)
+        var new_parts=[MOVE,MOVE]
+
+        for (var i=0; i<new_work_parts; i++) new_parts.push(WORK)
+        new_parts.push(CARRY)
+        Memory.room_strategy[roomName].role_upgrader.parts = new_parts
         return new_parts
     },
 
@@ -282,8 +299,17 @@ module.exports = {
         if (! room.find(FIND_MY_SPAWNS)[0])
             return false
 
-        // Choose a level based on eca
         var eca = room.energyCapacityAvailable
+
+        // When bootstrapping, don't switch to local spawning until eca reaches
+        // 800 (controller3)
+        var current = f.get([Memory.room_strategy, roomName, 'name'])
+        if (current == 'bootstrap_room' && eca < 800){
+            console.log(roomName)
+            return false
+        }
+
+        // Choose a level based on eca
         if (eca < 550){
             if (! f.get([Memory.room_strategy, roomName, 'name'])){
                 // Set a baseline for new, not bootstrapped rooms
