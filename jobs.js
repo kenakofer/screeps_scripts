@@ -287,11 +287,13 @@ check_mining: function(c){
             // There is no place to mine, return false
             return false
         }
-    } else if (c.memory.mining && f.get_energy(c) == c.carryCapacity) {
-        c.memory.mining = false
-    }
+    } 
     if (c.memory.mining){
         var target = Game.getObjectById(c.memory.mining);
+        if (f.get_energy(c) == c.carryCapacity || target.energy == 0){
+            c.memory.mining = false
+            return false
+        }
         if (c.harvest(target) == ERR_NOT_IN_RANGE){
             c.moveTo(target, {range:1, visualizePathStyle: {stroke: '#ff0', opacity: .3}})
         }
