@@ -50,12 +50,12 @@ check_population: function(rooms_with_spawn){
                         var result = spawnAt.createCreep(Memory.room_strategy[roomName][r].parts, {role: r, home_room: roomName})
                         //console.log(r)
                         if (result === ERR_NOT_ENOUGH_ENERGY){
-                            if (r=='role_restocker') {
+                            if (r=='role_restocker' || r=='role_harvester') {
                                 // Emergency catch for high level rooms where
                                 // the available energy has dropped too low to
-                                // spawn the more expensive restocker
-                                spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_restocker', home_room: roomName})
-                                Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency restocker to fix it. Just thought you\'d wanna know!', 1)
+                                // spawn the more expensive restocker or harvester
+                                spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_harvester', home_room: roomName})
+                                Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency harvester to fix it. Just thought you\'d wanna know!', 1)
                             } else {
                                 // Break from iterating the spawn order in this
                                 // room: Don't try to spawn things further down
