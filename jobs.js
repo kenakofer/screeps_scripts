@@ -427,8 +427,9 @@ trucker_pickup:  function(c){
     })[0]
     if (! store){
         // There is no container by the flag, so pick up energy from the ground
-        resource = flag.pos.findInRange(FIND_DROPPED_RESOURCES,1)
+        resource = flag.pos.findInRange(FIND_DROPPED_RESOURCES,1)[0]
         r = c.pickup(resource)
+        console.log(c.pos.roomName)
         if (r != OK)
             c.moveTo(flag, {range:0,})
         return true
