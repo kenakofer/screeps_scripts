@@ -54,8 +54,8 @@ check_population: function(rooms_with_spawn){
                                 // Emergency catch for high level rooms where
                                 // the available energy has dropped too low to
                                 // spawn the more expensive restocker or harvester
-                                spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: 'role_harvester', home_room: roomName})
-                                Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency harvester to fix it. Just thought you\'d wanna know!', 1)
+                                spawnAt.createCreep([MOVE,MOVE, CARRY,CARRY, WORK], {role: r, home_room: roomName})
+                                Game.notify('Hey Kenan, '+spawnAt.room.name+' ran low on energy, and spawned an emergency '+r+' to fix it. Just thought you\'d wanna know!', 1)
                             } else {
                                 // Break from iterating the spawn order in this
                                 // room: Don't try to spawn things further down
