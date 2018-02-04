@@ -526,8 +526,11 @@ check_home_room: function(c) {
             nextRoom = c.memory.home_room
         } else {
             // We have a path to guide us there.
-            index = path.indexOf(c.room.name)
-            nextRoom = path[index+1]
+            var index = path.indexOf(c.room.name)
+            if (index == -1)
+                nextRoom = c.memory.home_room
+            else
+                nextRoom = path[index+1]
         }
         var r = c.moveTo(new RoomPosition(25,25, nextRoom), {range:5, visualizePathStyle: {stroke: '#ff0', opacity: .3}} )
         if (r == -2) {
