@@ -95,6 +95,20 @@ module.exports = {
         });
     },
     
+    remote_mine_room_defenseless: function(roomName, fromRoom){
+        if (! Memory.room_strategy[roomName]) Memory.room_strategy[roomName] = {}
+        var updates = {
+            'spawn_priority':['role_solominer', 'role_claimer', 'role_builder', 'role_trucker'],
+            'role_claimer':{'spawn_room':fromRoom},
+            'role_builder':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY], 'desired_number':0},
+            'role_solominer':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE, CARRY, WORK,WORK,WORK,WORK,WORK]},
+            'role_trucker':{'spawn_room':fromRoom, 'parts':[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]},
+            'name': 'remote_mine_room',
+        }
+        Object.keys(updates).forEach(function(key){
+            Memory.room_strategy[roomName][key] = updates[key]
+        });
+    },
     
 
     //For controller level 3. Solomining is assumed by this point. Prioritize building the new extensions and a tower
