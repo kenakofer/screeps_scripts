@@ -377,7 +377,8 @@ upgrade_controller: function(c) {
 
     c.job = 'upgrade_controller'
     //If there's a flag, we should be trying to move toward it
-    this.goto_flag(c, 'upgrade')
+    if (Game.time % 5 == 0)
+        this.goto_flag(c, 'upgrade')
 
     var r = c.upgradeController(c.room.controller)
     
@@ -386,8 +387,12 @@ upgrade_controller: function(c) {
         return c.room.controller
     }
     else if (r===OK){
-        //Try to pull more energy from any storage that might be nearby, but only if there is enough to fill up and leave some for other important stuff, like maybe restockers want it
-        this.check_withdraw(c, true, true, 300)
+        // Try to pull more energy from any storage that might be nearby, but
+        // only if there is enough to fill up and leave some for other
+        // important stuff, like maybe restockers want it.
+        // Also, since this carries the obligatory .1 cpu, only do it as needed
+        if (c.carry.energy < .4 * c.carryCapacity)
+            this.check_withdraw(c, true, true, 300)
         return true
     }
     return false

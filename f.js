@@ -78,6 +78,12 @@ cpuTrackRole: function(values){
     }
 },
 
+cpuRoleSummary: function(){
+    for (var role in Memory.cpuTrackRole){
+        console.log(role+': '+Memory.cpuTrackRole[role][100]+', '+Memory.cpuTrackRole[role][10000])
+    }
+},
+
 //Check if withdraw from a container/storage s by creep c is allowed and feasible
 can_withdraw: function(c, s){
     var rule = 'withdraw_spawn_empty'

@@ -121,7 +121,6 @@ role_upgrader: {
     run: function(c) {
         jobs.check_ondropped(c);
 
-        jobs.check_invaders(c) ||
         jobs.check_home_room(c) ||
         jobs.check_withdraw(c, false, false) ||
         jobs.check_dropped(c, true, 400) ||
@@ -141,7 +140,6 @@ role_builder: {
 
         jobs.check_ondropped(c);
 
-        jobs.check_invaders(c) ||
         jobs.check_find_energy(c) ||
         //jobs.check_withdraw(c, false, false) || 
         //jobs.check_dropped(c, true, 400) ||
