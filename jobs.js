@@ -415,7 +415,7 @@ trucker_dropoff:  function(c){
 
 trucker_pickup:  function(c){
     c.job = 'trucker_pickup'
-    if (_.sum(c.carry) > .5 * c.carryCapacity)
+    if (_.sum(c.carry) > 0)
         return false
     flag = Game.flags[f.get([c, 'memory', 'pickup_flag'])]
     if (flag.pos.roomName != c.room.name){
@@ -429,7 +429,6 @@ trucker_pickup:  function(c){
         // There is no container by the flag, so pick up energy from the ground
         resource = flag.pos.findInRange(FIND_DROPPED_RESOURCES,1)[0]
         r = c.pickup(resource)
-        console.log(c.pos.roomName)
         if (r != OK)
             c.moveTo(flag, {range:0,})
         return true

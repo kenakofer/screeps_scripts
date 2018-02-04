@@ -133,7 +133,7 @@ create_extension_sites: function(flag){
         } else {
             // There is probably already an extension or a wall or
             // something here
-            console.log(r)
+            //console.log('Can\'t build there: '+r)
             continue
         }
     }
