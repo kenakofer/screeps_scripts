@@ -33,6 +33,13 @@ check_population: function(rooms_with_spawn){
             continue;
         if ( spawn && (!rooms_with_spawn))
             continue;
+        
+        var hostiles_since = f.get([Memory.room_strategy, roomName, 'hostiles_present_since'])
+
+        // Don't spawn more remote miners if there's a hostile in their room!
+        if (hostiles_since && f.get([Memory.room_strategy, roomName, 'name']) == 'remote_mine_room')
+            continue
+
         var role_count = this.census(false, roomName)
         //Replace base classes as they die
         var spawn_order = f.get([Memory, 'room_strategy', roomName, 'spawn_priority'])
@@ -75,6 +82,16 @@ check_flag_creeps: function(){
     //Create creeps in 1-1 correspondance with special flags
     //TODO make this different method? flag associated creeps vs. counted creeps?
     for (var f_name in Game.flags){
+
+        var roomName = Game.flags[f_name].pos.roomName
+        var hostiles_since = f.get([Memory.room_strategy, roomName, 'hostiles_present_since'])
+
+        // Don't spawn more remote miners if there's a hostile in their room!
+        if (hostiles_since && f.get([Memory.room_strategy, roomName, 'name']) == 'remote_mine_room'){
+            console.log('here')
+
+            continue
+        }
         
         //Create solominers
         if (f_name.includes('solomine')){

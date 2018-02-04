@@ -67,10 +67,24 @@ module.exports.loop = function () {
             Memory.room_strategy[roomName]['terminal_low'] = 
                 (Game.rooms[roomName].terminal && Game.rooms[roomName].terminal.store.energy < 10000)
 
+            // Checking rooms with controllers
+            var controller = f.get([Game.rooms, roomName, 'controller'])
+            if (! controller)
+                continue
+            
+            // Set a memory variable with the time the hostiles arrived
+            if (f.get([Memory.room_strategy, roomName, 'hostiles_present_since']) === undefined){
+                if (controller.room.find(FIND_HOSTILE_CREEPS)[0])
+                    Memory.room_strategy[roomName].hostiles_present_since = Game.time
+            } else {
+                //Clear the memory if no hostile creeps
+                if (! controller.room.find(FIND_HOSTILE_CREEPS)[0])
+                    Memory.room_strategy[roomName].hostiles_present_since = undefined
+            }
+
             // Check for if an emergency safe mode is needed
             // First establish the presence of a non safemode controller with hostiles in the room
-            var controller = f.get([Game.rooms, roomName, 'controller'])
-            if (controller && controller.my && (controller.safeMode === undefined) && (controller.room.find(FIND_HOSTILE_CREEPS)[0])){
+            if (controller.my && (controller.safeMode === undefined) && (controller.room.find(FIND_HOSTILE_CREEPS)[0])){
                 // See if we don't have a cache of structures
                 if (! f.get([Memory.room_strategy, roomName, 'hostile_struct_check'])){
                     // Get all the relevant structure ids in the room
