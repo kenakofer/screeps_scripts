@@ -54,23 +54,32 @@ module.exports.loop = function () {
     }
     // Update various room status
     if (Game.time % 3 === 2){
-        for (var roomName in Game.rooms){
+        for (var roomName in Memory.room_strategy){
             var room = Game.rooms[roomName]
-            if (! Memory.room_strategy[roomName]){ Memory.room_strategy[roomName]={} }
-            Memory.room_strategy[roomName]['energy_need_filled'] = room.energyAvailable < room.energyCapacityAvailable
-            Memory.room_strategy[roomName]['towers_need_filled'] = 
-                room.find(FIND_STRUCTURES, {
-                    filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
-                })[0]
-            Memory.room_strategy[roomName]['storage_low'] = 
-                (Game.rooms[roomName].storage && Game.rooms[roomName].storage.store.energy < 100000)
-            Memory.room_strategy[roomName]['terminal_low'] = 
-                (Game.rooms[roomName].terminal && Game.rooms[roomName].terminal.store.energy < 10000)
+
+            if (room){
+                Memory.room_strategy[roomName]['energy_need_filled'] = room.energyAvailable < room.energyCapacityAvailable
+                Memory.room_strategy[roomName]['towers_need_filled'] = 
+                    room.find(FIND_STRUCTURES, {
+                        filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
+                    })[0]
+                Memory.room_strategy[roomName]['storage_low'] = 
+                    (Game.rooms[roomName].storage && Game.rooms[roomName].storage.store.energy < 100000)
+                Memory.room_strategy[roomName]['terminal_low'] = 
+                    (Game.rooms[roomName].terminal && Game.rooms[roomName].terminal.store.energy < 10000)
+            }
 
             // Checking rooms with controllers
             var controller = f.get([Game.rooms, roomName, 'controller'])
-            if (! controller)
+            if (! controller){
+                // Make sure the hostiles check is reset
+                var ps = f.get([Memory.room_strategy, roomName, 'hostiles_present_since'])
+                if (ps && Game.time - ps > CREEP_LIFE_TIME){
+                    console.log('aoeu')
+                    Memory.room_strategy[roomName].hostiles_present_since = undefined
+                }
                 continue
+            }
             
             // Set a memory variable with the time the hostiles arrived
             if (f.get([Memory.room_strategy, roomName, 'hostiles_present_since']) === undefined){

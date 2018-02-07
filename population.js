@@ -88,7 +88,7 @@ check_flag_creeps: function(){
 
         // Don't spawn more remote miners if there's a hostile in their room!
         if (hostiles_since && f.get([Memory.room_strategy, roomName, 'name']) == 'remote_mine_room'){
-            console.log('here')
+            //console.log('here')
 
             continue
         }
