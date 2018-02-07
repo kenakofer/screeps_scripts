@@ -277,22 +277,42 @@ module.exports = {
 
     // Increase work parts of the upgrader (excess energy in room!)
     // eg: require('memory_set').increase_upgrader_work('E44S37')
+    // Only use this for creeps that will spend most of their time upgrading
 
-    increase_upgrader_work: function(roomName, increase_amount){
+    increase_upgrader_work: function(roomName, increase_amount, role){
+        role = role || 'role_upgrader'
         increase_amount = increase_amount || 1
-        if (! f.get([Memory.room_strategy, roomName, 'role_upgrader'])){
-            console.log('This room doesn\'t have upgraders in it!')
+        if (! f.get([Memory.room_strategy, roomName, role])){
+            console.log('This room doesn\'t have a '+role+' in it!')
             return false
         }
-        var current_work_parts = Memory.room_strategy[roomName].role_upgrader.parts.filter(p => p == WORK).length
+        var current_work_parts = Memory.room_strategy[roomName][role].parts.filter(p => p == WORK).length
         var new_work_parts = current_work_parts + increase_amount
         console.log(new_work_parts)
-        var new_parts=[MOVE,MOVE]
 
-        for (var i=0; i<new_work_parts; i++) new_parts.push(WORK)
-        new_parts.push(CARRY)
-        Memory.room_strategy[roomName].role_upgrader.parts = new_parts
-        return new_parts
+        if (new_work_parts < 17){
+            // For less than 17, use a pattern of MOVE,MOVE, <all work parts>,
+            // CARRY
+            var new_parts=[MOVE,MOVE]
+            for (var i=0; i<new_work_parts; i++) new_parts.push(WORK)
+            new_parts.push(CARRY)
+            Memory.room_strategy[roomName][role].parts = new_parts
+            return new_parts
+        } else {
+            // For more than 17, push a MOVE before each group of 4 other parts,
+            // starting with all works and ending with 3 CARRYs
+            var new_parts=[]
+            for (var i=0; i<new_work_parts+3; i++){
+                if (i%4==0)
+                    new_parts.push(MOVE)
+                if (i < new_work_parts)
+                    new_parts.push(WORK)
+                else
+                    new_parts.push(CARRY)
+            }
+            Memory.room_strategy[roomName][role].parts = new_parts
+            return new_parts
+        }
     },
 
 
