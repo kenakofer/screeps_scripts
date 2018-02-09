@@ -43,7 +43,7 @@ role_harvester: {
 
         jobs.check_ondropped(c);
 
-        jobs.check_dropped(c, true, 50) ||
+        jobs.check_find_energy(c) ||
         jobs.check_mining(c) || 
         jobs.check_spawn(c) ||
         jobs.check_towers(c) ||

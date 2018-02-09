@@ -75,7 +75,7 @@ module.exports.loop = function () {
                 // Make sure the hostiles check is reset
                 var ps = f.get([Memory.room_strategy, roomName, 'hostiles_present_since'])
                 if (ps && Game.time - ps > CREEP_LIFE_TIME){
-                    console.log('aoeu')
+                    console.log('Unsticking hostiles_present_since in '+roomName+' due to 1500 tick timeout.')
                     Memory.room_strategy[roomName].hostiles_present_since = undefined
                 }
                 continue

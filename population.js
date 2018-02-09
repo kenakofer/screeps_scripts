@@ -147,6 +147,7 @@ check_flag_creeps: function(){
                 }   
             }
         }
+       
         //Create creep to claim a controller
         if (f_name.includes('claim') && (! f.get([Game, 'creeps', [Memory, f_name]]))){
             //There is no creep claiming this location, so let's create one!

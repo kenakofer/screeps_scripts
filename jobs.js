@@ -360,7 +360,7 @@ check_towers: function(c){
 
     c.job = 'check_towers'
 
-    if (f.get_energy(c) == 0)
+    if (f.get_energy(c) == 0 || (false === f.get([Memory, 'room_strategy', c.room.name, 'towers_need_filled'])))
             return false
     var target = c.pos.findClosestByPath(FIND_STRUCTURES, {range:1,
         filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < (s.energyCapacity * .90)
@@ -851,17 +851,24 @@ check_healself: function(c){
     }
 },
 check_renew: function(c){
-    var r = undefined
+
+    //Don't renew if too much or too little ticks left
+    if (c.ticksToLive < 60 || c.ticksToLive > 1200)
+        return false
+
     // See if the parts requirements for the room have changed since this creep was spawned
     var parts = c.body.map(b => b.type)
     var is_same_parts_set = f.arrays_equal(c.body.map(b => b.type), f.get([Memory.room_strategy, c.memory.home_room, c.memory.role, 'parts']))
 
-    // If the parts are the same, and the creep is between some threshhold ages
-    if (is_same_parts_set && c.ticksToLive > 60 && c.ticksToLive < 1200){
-        var spawn = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_SPAWN && s.energy > 150})[0]
-        if (spawn)
-            r = spawn.renewCreep(c)
-    }
+    // Don't renew if the room_strategy calls for a different parts set 
+    if (! is_same_parts_set)
+        return false
+
+    // If the creep is standing by a spawn, try to renew!
+    var spawn = c.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_SPAWN && s.energy > 150})[0]
+    var r = undefined
+    if (spawn)
+        r = spawn.renewCreep(c)
     return (r === OK)
 },
 
