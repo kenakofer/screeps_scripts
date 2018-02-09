@@ -281,6 +281,12 @@ module.exports = {
 
     increase_upgrader_work: function(roomName, increase_amount, role){
         role = role || 'role_upgrader'
+        if (! f.get([Memory.room_strategy, roomName, role, desired_number]) > 0){
+            // If there are none of whatever was passed in in the room, try
+            // builder instead
+            role = 'role_builder'
+        }
+        
         increase_amount = increase_amount || 1
         if (! f.get([Memory.room_strategy, roomName, role])){
             console.log('This room doesn\'t have a '+role+' in it!')
@@ -389,12 +395,77 @@ module.exports = {
                 console.log('Automatically setting '+roomName+' to controller7')
                 return this.controller7(roomName)
             }
+        //TODO do I even need a controller8 setting? It will probably look just like 7.
         } else {
             console.log('uncaught')
             return false
         }
+    },
 
+    // Automatically check a room's storage compared to a previous check. If
+    // there is still energy flowing into the storage rather than out, or if
+    // the energy in the storage is above 2/3, then we will increase the
+    // upgrader's work parts. Ideally, this method should only be run once in a
+    // maybe 10 000 ticks, so that any previous effects from a previous
+    // automatic upgrade can take effect.
+    automatic_upgrader_work_check(roomName){
+        var room = Game.rooms[roomName]
+        var storage = f.get([room, 'storage'])
+        var controller_level = f.get([room, 'controller', 'level'])
+        if (! room || ! storage || ! storage.my || ! controller_level || controller_level < 5){
+            console.log('This room is not suitable for an upgrader work check: '+roomName)
+            return false
+        }
+        
+        // If there is no snapshot on file, this is the first, so just take a
+        // snapshot and return
+        if (! Memory.room_strategy[roomName].storage_snapshot){
+            console.log('Taking initial snapshot of storage')
+            Memory.room_strategy[roomName].storage_snapshot = {'tick':Game.time, 'amount':storage.store.energy}
+            return Memory.room_strategy[roomName].storage_snapshot 
+        }
 
+        // There is a snapshot on file. Let's compare to it
+        var ss = Memory.room_strategy[roomName].storage_snapshot
+
+        // Make sure enough time has passed
+        if (Game.time - ss.tick < 10000){
+            console.log((Game.time - ss.tick)+' is not enough time since the last snapshot')
+            return false
+        }
+
+        // Since enough time has passed, set another snapshot. This won't
+        // mess up our processing with ss
+        Memory.room_strategy[roomName].storage_snapshot = {'tick':Game.time, 'amount':storage.store.energy}
+
+        // First order of business is to fix rooms that may be drawing too much
+        // If the storage is low overall, and is decreasing in amount, reduce the work parts
+        if (storage.store.energy < 50000 && storage.store.energy - ss.amount < 0){
+            console.log('Room is low on energy and decreasing')
+            return true
+        }
+        // If the room is suffering great decreases in energy, reduce. 
+        if (storage.store.energy - ss.amount < -7000){
+            console.log('Room is decreasing rapidly')
+            return true
+        }
+        
+        // Now to check for happy excesses!
+        // Make sure there is enough energy
+        if (storage.store.energy < 50000){
+            console.log('Not enough energy in storage for increase')
+            return false
+        }
+        // Make sure there is an increase of energy, or a continuing excess of energy
+        if (storage.store.energy - ss.amount < 7000 && storage.store.energy < 600000){
+            console.log('Not enough increase in storage')
+            return false
+        }
+
+        // At this point, we know that the storage has enough energy and is
+        // increasing (or has a ton of energy). Now we increase upgrader capacity.
+        console.log('Increasing the upgrader work parts in '+roomName)
+        return increase_upgrader_work(roomName, 1)
     }
 }
 
