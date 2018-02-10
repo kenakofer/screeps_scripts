@@ -281,7 +281,7 @@ module.exports = {
 
     increase_upgrader_work: function(roomName, increase_amount, role){
         role = role || 'role_upgrader'
-        if (! f.get([Memory.room_strategy, roomName, role, desired_number]) > 0){
+        if (! f.get([Memory.room_strategy, roomName, role, 'desired_number']) > 0){
             // If there are none of whatever was passed in in the room, try
             // builder instead
             role = 'role_builder'
@@ -429,7 +429,7 @@ module.exports = {
         var ss = Memory.room_strategy[roomName].storage_snapshot
 
         // Make sure enough time has passed
-        if (Game.time - ss.tick < 10000){
+        if (Game.time - ss.tick < 9000){
             console.log((Game.time - ss.tick)+' is not enough time since the last snapshot')
             return false
         }
@@ -442,12 +442,14 @@ module.exports = {
         // If the storage is low overall, and is decreasing in amount, reduce the work parts
         if (storage.store.energy < 50000 && storage.store.energy - ss.amount < 0){
             console.log('Room is low on energy and decreasing')
-            return true
+            console.log('Decreasing the upgrader work parts in '+roomName)
+            return this.increase_upgrader_work(roomName, -2)
         }
         // If the room is suffering great decreases in energy, reduce. 
         if (storage.store.energy - ss.amount < -7000){
             console.log('Room is decreasing rapidly')
-            return true
+            console.log('Decreasing the upgrader work parts in '+roomName)
+            return this.increase_upgrader_work(roomName, -1)
         }
         
         // Now to check for happy excesses!
@@ -465,7 +467,7 @@ module.exports = {
         // At this point, we know that the storage has enough energy and is
         // increasing (or has a ton of energy). Now we increase upgrader capacity.
         console.log('Increasing the upgrader work parts in '+roomName)
-        return increase_upgrader_work(roomName, 1)
+        return this.increase_upgrader_work(roomName, 1)
     }
 }
 
