@@ -423,6 +423,8 @@ trucker_pickup:  function(c){
     if (_.sum(c.carry) > 0)
         return false
     flag = Game.flags[f.get([c, 'memory', 'pickup_flag'])]
+    if (! flag)
+        return false
     if (flag.pos.roomName != c.room.name){
         c.moveTo(flag, {range:5,})
         return true

@@ -107,7 +107,7 @@ check_flag_creeps: function(){
                 if (f.get([Memory.room_strategy, mine_in_room, 'role_solominer', 'spawn_room'])) {
                     spawn_in_room = Memory.room_strategy[mine_in_room].role_solominer.spawn_room
                 }
-                if (Game.rooms[spawn_in_room] && Memory.room_strategy[mine_in_room].role_solominer){
+                if (Game.rooms[spawn_in_room] && f.get([Memory.room_strategy, mine_in_room, 'role_solominer'])){
                     var spawn = f.get([Game.rooms[spawn_in_room].find(FIND_MY_SPAWNS), 0])
                     if (spawn){
                     
