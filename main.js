@@ -159,6 +159,12 @@ module.exports.loop = function () {
         }
     }
 
+    if ((Game.time % 10000) == 0){
+        for (rn in Game.rooms){
+            memory_set.automatic_upgrader_work_check(rn)
+        }
+    }
+
     f.cpuTrack(1,10,100,1000,10000)
     
 }
